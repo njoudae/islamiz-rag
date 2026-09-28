@@ -1,0 +1,50 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+build/
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local data, caches, and source corpora
+data/cache/
+data/exports/
+apps/api/data/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Codex/PowerPoint working files and local previews
+.codex-finalizer/
+.deck_build/
+.deck_build_final/
+.deck_build_official/
+.deck_output/
+.official_template_inspection/
+.runtime/
+tmp/
+artifacts/presentation/
+artifacts/screenshots/final/
+
+# Local agent/editor instruction files
+apps/web/AGENTS.md
+apps/web/CLAUDE.md
+
+# Operating-system and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,11 @@
+{
+  "name": "daleel-fatwa",
+  "private": true,
+  "workspaces": ["apps/web"],
+  "scripts": {
+    "dev": "npm run dev -w @daleel/web",
+    "build": "npm run build -w @daleel/web",
+    "test:web": "npm run test -w @daleel/web"
+  }
+}
+
