@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from app.models.domain import RetrievedEvidence
+from app.models.domain import EvidenceState, GroundedGeneration, RetrievedEvidence
 
 
 class SpeechToTextProvider(ABC):
@@ -19,6 +19,12 @@ class EmbeddingProvider(ABC):
     @abstractmethod
     async def embed(self, texts: list[str]) -> list[list[float]]: ...
 
+    async def embed_queries(self, texts: list[str]) -> list[list[float]]:
+        return await self.embed(texts)
+
+    async def embed_passages(self, texts: list[str]) -> list[list[float]]:
+        return await self.embed(texts)
+
 
 class RerankerProvider(ABC):
     @abstractmethod
@@ -27,7 +33,7 @@ class RerankerProvider(ABC):
 
 class GenerationProvider(ABC):
     @abstractmethod
-    async def grounded_summary(self, query: str, evidence: list[RetrievedEvidence], language: str) -> tuple[str, str]: ...
+    async def grounded_summary(self, query: str, evidence: list[RetrievedEvidence], language: str) -> GroundedGeneration: ...
 
 
 class MockSpeechToTextProvider(SpeechToTextProvider):
@@ -53,8 +59,8 @@ class MockRerankerProvider(RerankerProvider):
 
 
 class MockGenerationProvider(GenerationProvider):
-    async def grounded_summary(self, query: str, evidence: list[RetrievedEvidence], language: str) -> tuple[str, str]:
+    async def grounded_summary(self, query: str, evidence: list[RetrievedEvidence], language: str) -> GroundedGeneration:
         lead = evidence[0]
         if language == "en":
-            return (f"According to the approved source entry “{lead.title}”, the retrieved evidence directly addresses this question.", "This is a grounded explanation; review the original Arabic source below.")
-        return (f"بحسب مادة «{lead.title}» في المرجع المعتمد، يعالج النص المسترجع هذه المسألة مباشرة.", "هذا شرح موجز مبني على المصدر، ويمكن مراجعة النص العربي الأصلي أدناه.")
+            return GroundedGeneration(state=EvidenceState.ANSWERABLE, summary=f"According to the approved source entry “{lead.title}”, the retrieved evidence directly addresses this question.", explanation="This is a grounded explanation; review the original Arabic source below.", citation_chunk_ids=[lead.chunk_id] if lead.chunk_id else [])
+        return GroundedGeneration(state=EvidenceState.ANSWERABLE, summary=f"بحسب مادة «{lead.title}» في المرجع المعتمد، يعالج النص المسترجع هذه المسألة مباشرة.", explanation="هذا شرح موجز مبني على المصدر، ويمكن مراجعة النص العربي الأصلي أدناه.", citation_chunk_ids=[lead.chunk_id] if lead.chunk_id else [])

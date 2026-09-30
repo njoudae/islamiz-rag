@@ -1,0 +1,32 @@
+{
+  "recall@1": {
+    "numerator": 3,
+    "denominator": 8,
+    "value": 0.375
+  },
+  "recall@3": {
+    "numerator": 5,
+    "denominator": 8,
+    "value": 0.625
+  },
+  "recall@5": {
+    "numerator": 6,
+    "denominator": 8,
+    "value": 0.75
+  },
+  "recall@10": {
+    "numerator": 7,
+    "denominator": 8,
+    "value": 0.875
+  },
+  "recall@20": {
+    "numerator": 7,
+    "denominator": 8,
+    "value": 0.875
+  },
+  "mrr@10": {
+    "numerator_sum": 4.325,
+    "denominator": 8,
+    "value": 0.540625
+  }
+}

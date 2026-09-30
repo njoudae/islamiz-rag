@@ -1,0 +1,119 @@
+{
+  "evaluation_mode": "deterministic_offline",
+  "cases": [
+    {
+      "id": "A_DIRECT_ANSWERABLE",
+      "expected_state": "ANSWERABLE",
+      "actual_state": "ANSWERABLE",
+      "passed": true,
+      "has_source": true,
+      "source_identity_valid": true,
+      "generated_summary": true,
+      "requested_clarification": false,
+      "escalated": false
+    },
+    {
+      "id": "B_INFORMAL_ARABIC",
+      "expected_state": "ANSWERABLE",
+      "actual_state": "ANSWERABLE",
+      "passed": true,
+      "has_source": true,
+      "source_identity_valid": true,
+      "generated_summary": true,
+      "requested_clarification": false,
+      "escalated": false
+    },
+    {
+      "id": "C_MISSING_CONTEXT",
+      "expected_state": "NEEDS_CLARIFICATION",
+      "actual_state": "NEEDS_CLARIFICATION",
+      "passed": true,
+      "has_source": false,
+      "source_identity_valid": true,
+      "generated_summary": false,
+      "requested_clarification": true,
+      "escalated": false
+    },
+    {
+      "id": "D_COMPLEX_CASE",
+      "expected_state": "COMPLEX_CASE",
+      "actual_state": "COMPLEX_CASE",
+      "passed": true,
+      "has_source": false,
+      "source_identity_valid": true,
+      "generated_summary": false,
+      "requested_clarification": false,
+      "escalated": true
+    },
+    {
+      "id": "E_UNSUPPORTED",
+      "expected_state": "INSUFFICIENT_EVIDENCE",
+      "actual_state": "INSUFFICIENT_EVIDENCE",
+      "passed": true,
+      "has_source": false,
+      "source_identity_valid": true,
+      "generated_summary": false,
+      "requested_clarification": false,
+      "escalated": true
+    },
+    {
+      "id": "F_CONFLICTING_EVIDENCE",
+      "expected_state": "CONFLICTING_EVIDENCE",
+      "actual_state": "CONFLICTING_EVIDENCE",
+      "passed": true,
+      "has_source": false,
+      "source_identity_valid": true,
+      "generated_summary": false,
+      "requested_clarification": false,
+      "escalated": true
+    },
+    {
+      "id": "G_ENGLISH_QUERY",
+      "expected_state": "ANSWERABLE",
+      "actual_state": "ANSWERABLE",
+      "passed": true,
+      "has_source": true,
+      "source_identity_valid": true,
+      "generated_summary": true,
+      "requested_clarification": false,
+      "escalated": false
+    },
+    {
+      "id": "H_OUT_OF_SCOPE",
+      "expected_state": "OUT_OF_SCOPE",
+      "actual_state": "OUT_OF_SCOPE",
+      "passed": true,
+      "has_source": false,
+      "source_identity_valid": true,
+      "generated_summary": false,
+      "requested_clarification": false,
+      "escalated": true
+    }
+  ],
+  "metrics": {
+    "total_cases": 8,
+    "passed_cases": 8,
+    "failed_cases": 0,
+    "source_preservation": {
+      "passed": 3,
+      "total": 3,
+      "rate": 1.0
+    },
+    "unsupported_query_safety": {
+      "passed": 2,
+      "total": 2,
+      "rate": 1.0
+    },
+    "clarification_routing": {
+      "passed": 1,
+      "total": 1,
+      "rate": 1.0
+    },
+    "escalation_routing": {
+      "passed": 4,
+      "total": 4,
+      "rate": 1.0
+    },
+    "fabricated_citation_count": 0
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "project_name_ar": "دليل",
+  "project_name_en": "Daleel",
+  "track": "الحوار المعرفي والإجابات الموثوقة",
+  "description": "واجهة عربية أولًا للوصول إلى مادة فقهية معتمدة مع بوابة كفاية دليل تمنع الإجابة غير المسندة وتوجّه الحالات الناقصة أو المعقدة إلى التوضيح أو الإحالة.",
+  "team": [
+    {
+      "name": "نجود بن إسحاق",
+      "role": "AI Engineer"
+    },
+    {
+      "name": "بشرى شودري",
+      "role": "Software Engineer"
+    }
+  ],
+  "interaction_modes": [
+    "text",
+    "voice_provider_mock"
+  ],
+  "supported_languages": [
+    "Arabic",
+    "English (limited deterministic query path)"
+  ],
+  "approved_source": {
+    "name": "الموسوعة الفقهية – الدرر السنية",
+    "url": "https://dorar.net/feqhia",
+    "collection": "OFFICIAL_HACKATHON_REFERENCE"
+  },
+  "core_technologies": [
+    "Next.js 16",
+    "React 19",
+    "TypeScript",
+    "FastAPI",
+    "Pydantic",
+    "PostgreSQL schema",
+    "pgvector schema",
+    "Beautiful Soup"
+  ],
+  "safety_principle": "No Source = No Answer",
+  "implemented_features": [
+    "source-aware deterministic demo retrieval",
+    "approved-source HTML adapter",
+    "evidence sufficiency gate",
+    "clarification routing",
+    "complex/conflicting/unsupported/out-of-scope routing",
+    "citation identity preservation",
+    "Arabic RTL web interface",
+    "deterministic offline evaluation"
+  ],
+  "planned_features": [
+    "production PostgreSQL/pgvector retrieval repository",
+    "external embedding model",
+    "external reranker",
+    "external grounded-generation LLM",
+    "production ASR and TTS",
+    "broad multilingual retrieval",
+    "public production deployment"
+  ],
+  "evaluation_command": "python evaluate.py",
+  "documentation": {
+    "judging": "JUDGING.md",
+    "runbook": "RUNBOOK.md",
+    "architecture": "ARCHITECTURE.md",
+    "limitations": "LIMITATIONS.md",
+    "sources_and_licenses": "docs/sources-and-licenses.md",
+    "official_requirements": "docs/OFFICIAL_REQUIREMENTS.md",
+    "claim_evidence": "docs/CLAIM_EVIDENCE_MATRIX.md"
+  }
+}

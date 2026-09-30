@@ -56,7 +56,10 @@ class HackathonApprovedSourceAdapter(SourceAdapter):
         canonical_hint = str(canonical_tag.get("href")) if canonical_tag and canonical_tag.get("href") else None
         external_id, canonical_url = self._canonical_url(canonical_hint or url)
 
-        root = soup.select_one(".cntnt, main article, article, main")
+        root = soup.select_one(".cntnt")
+        if root is None:
+            root = next((node for node in soup.select(".amiri_custom_content") if node.select_one("h1")), None)
+        root = root or soup.select_one("main article, article, main")
         if not root:
             raise ValueError("Missing Dorar fiqh content root")
         title_node = root.select_one("h1") or soup.select_one("h1")
@@ -153,7 +156,8 @@ class HackathonApprovedSourceAdapter(SourceAdapter):
 
     @staticmethod
     def _source_content(root: Tag, title: str) -> str:
-        clone = BeautifulSoup(str(root), "html.parser")
+        content_node = root.select_one(".w-100.mt-4") or root
+        clone = BeautifulSoup(str(content_node), "html.parser")
         for node in clone.select("script, style, form, button, .breadcrumb, #more-titles, footer, nav"):
             node.decompose()
         raw = clean_text(clone.get_text("\n", strip=True))

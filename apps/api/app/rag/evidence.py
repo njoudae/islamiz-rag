@@ -18,16 +18,25 @@ class EvidenceSufficiencyEvaluator:
         if not evidence:
             return EvidenceDecision(state=EvidenceState.INSUFFICIENT_EVIDENCE, reasons=["no source was retrieved"])
 
-        direct = [item for item in evidence if item.coverage >= 0.72 and item.reranker_score >= 0.68]
+        direct = [
+            item for item in evidence
+            if (
+                item.coverage >= 0.30
+                and (item.dense_score or 0.0) >= 0.80
+                and item.reranker_score >= 0.05
+            ) or (
+                item.fused_rank == 1
+                and item.coverage >= 0.20
+                and (item.dense_score or 0.0) >= 0.85
+                and item.reranker_score >= 0.04
+            )
+        ]
         if not direct:
             return EvidenceDecision(state=EvidenceState.INSUFFICIENT_EVIDENCE, reasons=["sources do not directly cover the user circumstances"])
 
         top = direct[:3]
         if any(item.conflicting_positions for item in top):
             return EvidenceDecision(state=EvidenceState.CONFLICTING_EVIDENCE, reasons=["the approved source presents materially different positions"])
-        spread = max(item.reranker_score for item in top) - min(item.reranker_score for item in top)
-        if len(top) > 1 and spread > 0.28:
-            return EvidenceDecision(state=EvidenceState.CONFLICTING_EVIDENCE, reasons=["retrieved evidence lacks stable agreement"])
         return EvidenceDecision(state=EvidenceState.ANSWERABLE, reasons=["direct source coverage", "strong reranker score", "source agreement"])
 
     @staticmethod

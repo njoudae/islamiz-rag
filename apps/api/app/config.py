@@ -1,9 +1,14 @@
 from functools import lru_cache
+from pathlib import Path
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=(".env", str(Path(__file__).resolve().parents[3] / ".env")),
+        extra="ignore",
+    )
 
     app_name: str = "Daleel API"
     app_env: str = "development"
@@ -17,6 +22,10 @@ class Settings(BaseSettings):
     embedding_provider: str = "mock"
     reranker_provider: str = "mock"
     generation_provider: str = "mock"
+    e5_model: str = "intfloat/multilingual-e5-small"
+    qwen_reranker_model: str = "Qwen/Qwen3-Reranker-0.6B"
+    openai_generation_model: str = "gpt-6.1-sol"
+    openai_api_key: SecretStr | None = None
     default_source_collection: str = "OFFICIAL_HACKATHON_REFERENCE"
 
 

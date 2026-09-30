@@ -14,7 +14,14 @@ def structure_aware_chunks(document: FatwaDocument, max_chars: int = 2200) -> li
             if len(unit) <= max_chars:
                 expanded.append(unit)
                 continue
-            paragraphs = re.split(r"\n{2,}", unit)
+            # Dorar entries are organized by named fiqh sections.  Preserve
+            # those boundaries first, then pack adjacent short sections.  A
+            # character ceiling is only a final size guard, not the splitter.
+            paragraphs = re.split(
+                r"\n{2,}|(?=^(?:الفرع|المطلب|المبحث|الفصل|الباب|القول|الأدلة|الدليل|أولًا|ثانيًا|ثالثًا|وجه الدلالة)\b)",
+                unit,
+                flags=re.MULTILINE,
+            )
             current = ""
             for paragraph in paragraphs:
                 candidate = f"{current}\n\n{paragraph}".strip()

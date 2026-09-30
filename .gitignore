@@ -5,6 +5,7 @@ out/
 dist/
 build/
 .venv/
+.venv-real/
 __pycache__/
 .pytest_cache/
 *.py[cod]
@@ -38,6 +39,7 @@ apps/api/data/
 tmp/
 artifacts/presentation/
 artifacts/screenshots/final/
+artifacts/embeddings/*.npy
 
 # Local agent/editor instruction files
 apps/web/AGENTS.md

@@ -1,44 +1,57 @@
-# سجل المصادر والمكوّنات والتراخيص
+# Sources, Components, Services, and Licenses
 
-آخر تحديث: 2026-09-27. لا يحتوي هذا السجل على مفاتيح أو أسرار تشغيلية.
+Audited **2026-09-29**. `ACTUALLY USED` means imported, executed, or presented by the current repository. `PLANNED / OPTIONAL` means only a contract, schema, configuration placeholder, or local submission asset exists. No credentials belong in this file.
 
-| المكوّن | النوع | المصدر / الإصدار | الغرض في المشروع | الترخيص أو حالة الاستخدام | القيود والملاحظات | تاريخ الاطلاع |
-|---|---|---|---|---|---|---|
-| الموسوعة الفقهية - الدرر السنية | مرجع معرفة معتمد للنسخة التنافسية | [dorar.net/feqhia](https://dorar.net/feqhia) | المصدر الافتراضي للاسترجاع الموثق في وضع الهاكاثون | لم يُعثر في المواد المفحوصة على ترخيص مفتوح لإعادة النشر؛ اعتمادها كمرجع للمسابقة لا يُعد منحًا لترخيص عام | نحفظ المصدر والروابط والبيانات الظاهرة فقط؛ لا نملأ بيانات مفقودة، ولا نمزج الآراء، ولا نعيد نشر مجموعة كاملة | 2026-09-27 |
-| منهج عمل الموسوعة الفقهية | توثيق منهجي | [dorar.net/article/1923](https://dorar.net/article/1923) | التحقق من بنية المرجع ومنهجه | محتوى حقوقه محفوظة؛ استشهاد ووصف موجز فقط | لا يُفهم من الاستخدام وجود شراكة أو تزكية للمنتج | 2026-09-27 |
-| اعتماد منهج الموسوعة الفقهية | توثيق مصدر | [dorar.net/article/1983](https://dorar.net/article/1983) | توثيق اعتماد المنهج كما تنشره الدرر السنية | محتوى حقوقه محفوظة؛ استشهاد ووصف موجز فقط | لا نتجاوز ما تصرّح به الصفحة | 2026-09-27 |
-| موقع تحدي الذكاء الاصطناعي لخدمة المحتوى الإسلامي | متطلبات مسابقة | [islamicaich.org](https://islamicaich.org/) | اسم المسار والهوية والمتطلبات العامة | لا يوجد ترخيص مفتوح محدد؛ استخدام معلوماتي واستشهاد | لا تُنسب أي شراكة أو مصادقة إضافية | 2026-09-27 |
-| دليل المشارك الرسمي | متطلبات وتحكيم | [PDF الرسمي](https://islamicaich.org/files/Hackathon/i2xgA3mxVhrbRe0ReLlA86kTDbFZ9QQ9eb856dq8.pdf) | تعريف مسار «الحوار المعرفي والإجابات الموثوقة» ومعايير التحكيم | لا يوجد ترخيص مفتوح محدد؛ استخدام معلوماتي واستشهاد | تلخيص المتطلبات دون إعادة توزيع الدليل | 2026-09-27 |
-| قالب PowerPoint الرسمي | أصل تصميم مقدم من المنظم | `LcXbkXRzH232sfKL8cAgJ1AI7jQATxu2bP0S4EWu.pptx` | أساس العرض الرسمي، بما فيه الهوية والألوان والشعارات | مقدم للمشارك؛ لا يُفترض ترخيص عام خارج التسليم | لم يُعدّل الملف الأصلي؛ أُنشئت نسخة تسليم جديدة منه | 2026-09-27 |
-| موقع الشيخ عبدالعزيز بن باز | مرجع قديم منفصل | [binbaz.org.sa](https://binbaz.org.sa/) | محول مصدر محفوظ للتوافق المستقبلي فقط | لم يُعثر على ترخيص بيانات مفتوح؛ حقوق المحتوى محفوظة | مجموعة `BINBAZ_REFERENCE` منفصلة ومعطلة من الاسترجاع الافتراضي، ولا يوجد رجوع صامت إليها | 2026-09-27 |
-| Next.js | إطار واجهة | 16.3.5 - [vercel/next.js](https://github.com/vercel/next.js) | تطبيق الويب | MIT | إشعارات الترخيص الأصلية واجبة الحفظ عند التوزيع | 2026-09-27 |
-| React / React DOM | مكتبة واجهة | 19.3.0 - [facebook/react](https://github.com/facebook/react) | بناء المكونات | MIT | إشعارات الترخيص الأصلية واجبة الحفظ عند التوزيع | 2026-09-27 |
-| Radix Slot | مكوّن واجهة | 1.3.3 - [radix-ui/primitives](https://github.com/radix-ui/primitives) | تركيب مكونات قابلة لإعادة الاستخدام | MIT | إشعارات الترخيص الأصلية واجبة الحفظ | 2026-09-27 |
-| clsx | أداة CSS | 2.1.1 - [lukeed/clsx](https://github.com/lukeed/clsx) | تركيب أسماء الأصناف | MIT | إشعارات الترخيص الأصلية واجبة الحفظ | 2026-09-27 |
-| tailwind-merge | أداة CSS | 2.6.1 - [dcastil/tailwind-merge](https://github.com/dcastil/tailwind-merge) | دمج أصناف Tailwind | MIT | إشعارات الترخيص الأصلية واجبة الحفظ | 2026-09-27 |
-| Lucide React | مكتبة أيقونات | 0.468.0 - [lucide-icons/lucide](https://github.com/lucide-icons/lucide) | أيقونات الواجهة | ISC | تُحفظ إشعارات حقوق النشر والترخيص | 2026-09-27 |
-| FastAPI | إطار API | 0.141.1 - [fastapi/fastapi](https://github.com/fastapi/fastapi) | واجهة الخدمة الخلفية | MIT | إشعارات الترخيص الأصلية واجبة الحفظ | 2026-09-27 |
-| Uvicorn | خادم ASGI | 0.53.0 - [encode/uvicorn](https://github.com/encode/uvicorn) | تشغيل API محليًا | BSD-3-Clause | تُحفظ إشعارات الترخيص وعدم المصادقة | 2026-09-27 |
-| Pydantic Settings | إعدادات | 2.15.0 - [pydantic/pydantic-settings](https://github.com/pydantic/pydantic-settings) | تحميل إعدادات الخدمة | MIT | إشعارات الترخيص الأصلية واجبة الحفظ | 2026-09-27 |
-| SQLAlchemy | وصول للبيانات | 2.0.54 - [sqlalchemy/sqlalchemy](https://github.com/sqlalchemy/sqlalchemy) | طبقة قواعد البيانات | MIT | إشعارات الترخيص الأصلية واجبة الحفظ | 2026-09-27 |
-| psycopg / psycopg-binary | مشغل PostgreSQL | 3.3.6 - [psycopg/psycopg](https://github.com/psycopg/psycopg) | الاتصال بقاعدة البيانات | LGPL-3.0-only | مراجعة التزامات LGPL عند التوزيع، خصوصًا الحزمة الثنائية | 2026-09-27 |
-| HTTPX | عميل HTTP | 0.28.1 - [encode/httpx](https://github.com/encode/httpx) | جلب صفحات المصادر في خط الإدخال | BSD-3-Clause | تُحفظ إشعارات الترخيص وعدم المصادقة | 2026-09-27 |
-| Beautiful Soup | تحليل HTML | 4.15.0 - [wention/BeautifulSoup4](https://github.com/wention/BeautifulSoup4) | تحليل صفحات المصدر بطريقة حتمية | MIT | إشعارات الترخيص الأصلية واجبة الحفظ | 2026-09-27 |
-| python-multipart | معالجة نماذج | 0.0.32 - [Kludex/python-multipart](https://github.com/Kludex/python-multipart) | استقبال بيانات multipart | Apache-2.0 | حفظ الإشعارات وملف NOTICE إن وجد | 2026-09-27 |
-| Typer | واجهة أوامر | 0.27.2 - [fastapi/typer](https://github.com/fastapi/typer) | أوامر الإدخال والتدقيق | MIT | إشعارات الترخيص الأصلية واجبة الحفظ | 2026-09-27 |
-| PostgreSQL | قاعدة بيانات | إصدار يحدده النشر - [postgresql.org](https://www.postgresql.org/) | تخزين المستندات والبيانات الوصفية | PostgreSQL License | غير مضمن كخدمة مستضافة في المستودع | 2026-09-27 |
-| pgvector | امتداد بحث متجهي | إصدار يحدده النشر - [pgvector/pgvector](https://github.com/pgvector/pgvector) | مخطط بحث المتجهات | PostgreSQL License | المخطط موجود؛ نموذج embedding خارجي غير موصول في النسخة الحالية | 2026-09-27 |
-| ASR / تحويل الكلام إلى نص | موفر تجريبي داخلي | `mock` / provider abstraction | اختبار مسار الصوت دون خدمة خارجية | كود المشروع | لا يوجد Qwen3-ASR أو مزود خارجي موصول حاليًا؛ لا تُرسل بيانات صوتية لطرف ثالث | 2026-09-27 |
-| TTS / تحويل النص إلى كلام | موفر تجريبي داخلي | `mock` | اختبار واجهة الرد الصوتي | كود المشروع | لا يوجد مزود TTS خارجي موصول حاليًا | 2026-09-27 |
-| Embeddings | تنفيذ تطويري حتمي | `mock` / `deterministic-dev` | اختبار خط الفهرسة | كود المشروع | ليس نموذج embeddings إنتاجيًا ولا تُنسب إليه قدرات غير منفذة | 2026-09-27 |
-| Reranker | تنفيذ تطويري حتمي | `mock` | ترتيب مرشحي العينة | كود المشروع | لا يوجد نموذج reranker خارجي موصول حاليًا | 2026-09-27 |
-| LLM / توليد الإجابة | موفر تجريبي داخلي | `mock` / provider abstraction | اختبار الإجابة المقيدة بالدليل | كود المشروع | لا يوجد نموذج Qwen أو LLM خارجي موصول حاليًا؛ يمنع إصدار حكم بلا دليل مسترجع | 2026-09-27 |
-| لقطات التطبيق | أصول منتجة داخليًا | `artifacts/screenshots/official/` | عرض تجربة المنتج الفعلية | ملكية المشروع | ملتقطة من التطبيق المحلي المحدّث، وليست صورًا مخزنة | 2026-09-27 |
+| Status | Component | Type | Source / version | Purpose | License / rights status | Restrictions / material notes | Access date |
+|---|---|---|---|---|---|---|---|
+| ACTUALLY USED | Daleel project code | First-party source | This repository | Product implementation | **No repository-level LICENSE file declared** | Copyright remains with its owners by default; choose and add a license only with all rights holders’ approval | 2026-09-29 |
+| ACTUALLY USED | الموسوعة الفقهية – الدرر السنية | Approved knowledge reference | [dorar.net/feqhia](https://dorar.net/feqhia) | Default `OFFICIAL_HACKATHON_REFERENCE` source identity | No open redistribution license identified | Do not redistribute a copied corpus; preserve attribution/links; use only content the team is authorized to process | 2026-09-29 |
+| ACTUALLY USED | Dorar methodology pages | Source methodology | [method](https://dorar.net/article/1923), [accreditation description](https://dorar.net/article/1983) | Understand source structure/method | Rights reserved; informational citation | No claim of partnership or endorsement | 2026-09-29 |
+| ACTUALLY USED | Official challenge website | Competition source | [islamicaich.org](https://islamicaich.org/) | Tracks, participation, submission requirements | Rights reserved; informational citation | Official Arabic text controls; do not imply organizer endorsement | 2026-09-29 |
+| ACTUALLY USED | Official participant guide | Competition PDF | [official PDF](https://islamicaich.org/files/Hackathon/i2xgA3mxVhrbRe0ReLlA86kTDbFZ9QQ9eb856dq8.pdf) | Deliverables and judging criteria | Rights reserved; participant information use | Summarized, not redistributed | 2026-09-29 |
+| ACTUALLY USED | Official scientific annex | Competition reference policy | Participant portal; public website names the annex but exposes no indexed public content link | Approved-source scope | Organizer material | Team must confirm exact portal release before submission | 2026-09-29 |
+| ACTUALLY USED | Next.js | Web framework | 16.3.5 | Web application | MIT | Preserve copyright/license notices | 2026-09-29 |
+| ACTUALLY USED | React / React DOM | UI library | 19.3.0 | UI components | MIT | Preserve notices | 2026-09-29 |
+| ACTUALLY USED | Lucide React | Icons | 0.468.0 | UI icons | ISC | Preserve notice | 2026-09-29 |
+| ACTUALLY USED | Radix Slot | UI primitive | 1.3.3 | Component composition | MIT | Preserve notices | 2026-09-29 |
+| ACTUALLY USED | clsx | Utility | 2.1.1 | CSS class composition | MIT | Preserve notices | 2026-09-29 |
+| ACTUALLY USED | tailwind-merge | Utility | 2.6.1 | Merge utility classes | MIT | Preserve notices | 2026-09-29 |
+| ACTUALLY USED | Tailwind CSS / PostCSS | Build tooling | Locked in `package-lock.json` | Styling build | MIT | Development/build dependency | 2026-09-29 |
+| ACTUALLY USED | FastAPI | API framework | `>=0.115,<1` | HTTP API | MIT | Preserve notices | 2026-09-29 |
+| ACTUALLY USED | Uvicorn | ASGI server | `>=0.32,<1` | Local API server | BSD-3-Clause | Preserve notices and non-endorsement clause | 2026-09-29 |
+| ACTUALLY USED | Pydantic Settings | Configuration | `>=2.6,<3` | Environment parsing | MIT | Preserve notices | 2026-09-29 |
+| ACTUALLY USED | SQLAlchemy | Database library | `>=2.0,<3` | Provider-ready database layer dependency | MIT | Runtime repository is not implemented | 2026-09-29 |
+| ACTUALLY USED | psycopg / psycopg-binary | PostgreSQL driver | `>=3.2,<4` | Optional database connection | LGPL-3.0-only; recheck packaged notices | Review binary-distribution obligations before redistribution | 2026-09-29 |
+| ACTUALLY USED | HTTPX | HTTP client | `>=0.27,<1` | Conservative source fetchers | BSD-3-Clause | Network access and source terms still apply | 2026-09-29 |
+| ACTUALLY USED | Beautiful Soup | HTML parser | `>=4.12,<5` | Deterministic source parsing | MIT | Preserve notices | 2026-09-29 |
+| ACTUALLY USED | python-multipart | Multipart parser | `>=0.0.20,<1` | Speech upload endpoint | Apache-2.0 | Preserve license/NOTICE when applicable | 2026-09-29 |
+| ACTUALLY USED | Typer | CLI framework | `>=0.15,<1` | Ingestion CLI | MIT | Preserve notices | 2026-09-29 |
+| ACTUALLY USED | pytest / pytest-asyncio / respx | Test tools | Dev ranges in `pyproject.toml` | Automated tests | Open-source; verify from installed distributions | Development only | 2026-09-29 |
+| ACTUALLY USED | PostgreSQL | Database server | PostgreSQL 16-compatible container | Optional local schema | PostgreSQL License | No hosted service is bundled | 2026-09-29 |
+| ACTUALLY USED | pgvector | PostgreSQL extension | `pgvector/pgvector:pg16` image | Vector column/index schema | PostgreSQL License | Schema exists; production vectors are not loaded | 2026-09-29 |
+| ACTUALLY USED | Mock generation provider | First-party deterministic provider | `apps/api/app/providers/base.py` | Source-bound evaluation summary | Project code; repository-level license undeclared | Not an LLM; never represent it as model intelligence | 2026-09-29 |
+| ACTUALLY USED | Mock reranker | First-party deterministic provider | Same module | Sort controlled candidate scores | Project code; repository-level license undeclared | Not a learned reranker | 2026-09-29 |
+| ACTUALLY USED | Mock embedding provider | First-party deterministic provider | Same module | Ingestion contract/testing | Project code; repository-level license undeclared | Not semantic embeddings | 2026-09-29 |
+| ACTUALLY USED | Mock ASR/TTS providers | First-party deterministic providers | Same module | API/provider contract tests | Project code; repository-level license undeclared | No real transcription or playable synthesized audio | 2026-09-29 |
+| ACTUALLY USED | Application screenshots | First-party visual assets | `artifacts/screenshots/official/` | README/demo evidence | Created from Daleel UI | Ensure no third-party/private data enters replacement screenshots | 2026-09-29 |
+| ACTUALLY USED | Team avatar SVGs | First-party visual assets | `assets/team-*.svg` | Presentation/team visuals | Project-owned or team-provided; provenance should be retained | Confirm creator/likeness permissions before public distribution | 2026-09-29 |
+| ACTUALLY USED | GitHub QR image | Generated visual asset | `assets/github-qr.png` | Presentation repository link | Generated code image | Regenerate if final repository URL changes | 2026-09-29 |
+| PLANNED / OPTIONAL | Ibn Baz website adapter | Isolated legacy source | [binbaz.org.sa](https://binbaz.org.sa/) | Non-default future collection only | No open data license identified | `BINBAZ_REFERENCE` is not an approved-source fallback; no corpus redistributed | 2026-09-29 |
+| PLANNED / OPTIONAL | External embedding model | AI model | Not selected/connected | Semantic retrieval | Not applicable yet | Model name, license, hosting, data flow, and cost must be disclosed before use | 2026-09-29 |
+| PLANNED / OPTIONAL | External reranker | AI model | Not selected/connected | Learned relevance scoring | Not applicable yet | Same disclosure requirement | 2026-09-29 |
+| PLANNED / OPTIONAL | External LLM | AI model/service | Not selected/connected | Grounded summarization | Not applicable yet | No provider key or user/source content is currently sent externally | 2026-09-29 |
+| PLANNED / OPTIONAL | Production ASR | AI model/service | Not selected/connected | Speech recognition | Not applicable yet | Requires audio privacy, retention, license, region, and accuracy review | 2026-09-29 |
+| PLANNED / OPTIONAL | Production TTS | AI model/service | Not selected/connected | Spoken response | Not applicable yet | Must not impersonate a scholar/authority; disclose voice rights | 2026-09-29 |
+| PLANNED / OPTIONAL | Official PowerPoint template | Organizer visual asset | Local participant asset | Submission presentation | Provided for challenge participation; no general license inferred | Final presentation artifact is not tracked yet | 2026-09-29 |
 
-## ضوابط المصدر في وضع المسابقة
+## Data and API disclosure
 
-- المصدر الافتراضي هو `OFFICIAL_HACKATHON_REFERENCE` فقط.
-- يحتفظ كل سجل بهوية المصدر والرابط القانوني والبيانات الوصفية المتاحة فعليًا.
-- تبقى القيم غير الموجودة `NULL`؛ لا يُستخدم LLM لاختلاق عالم أو مذهب أو رقم فتوى أو كتاب أو صفحة أو تصنيف أو إحالة.
-- عند غياب الدليل الكافي أو تعقيد المسألة أو تعارض الأدلة، تكون النتيجة إحالة للمختص، لا رجوعًا إلى معرفة عامة أو إلى مجموعة ابن باز.
-- لا تُدمج أقوال علماء أو مذاهب متعددة في حكم مصطنع واحد.
+- No external AI/model API is called by the current runtime.
+- No real beneficiary conversation dataset is used.
+- Evaluation questions and HTML fixtures are synthetic.
+- The real Dorar corpus is not committed.
+- No credentials or populated `.env` file are committed.
+
+## License blocker
+
+The repository itself has no `LICENSE` file. That is not automatically a hackathon disqualifier, but it means downstream reuse rights are not granted by default and may reduce public-repository clarity. The team—not an automated tool—must choose the project license after confirming all contributors’ and prior-work rights.

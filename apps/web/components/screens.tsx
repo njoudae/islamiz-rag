@@ -18,6 +18,24 @@ type AnswerPayload = {
   citations: Array<{ fatwa_id: number; title: string; source_url: string; excerpt?: string | null; source_collection_name?: string; source_authority?: string | null; scholar?: string | null; madhhabs?: string[]; original_reference?: Array<{ raw: string; book?: string | null; volume?: string | null; page?: string | null }>; source_type?: string }>;
 };
 
+const answerRequests = new Map<string, Promise<AnswerPayload>>();
+
+function requestAnswer(question: string) {
+  let request = answerRequests.get(question);
+  if (!request) {
+    request = fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/v1/ask`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: question, answer_mode: "text" }),
+    }).then((response) => {
+      if (!response.ok) throw new Error(`API request failed: ${response.status}`);
+      return response.json() as Promise<AnswerPayload>;
+    });
+    answerRequests.set(question, request);
+  }
+  return request;
+}
+
 export function ScreenRouter({ slug }: { slug: string[] }) {
   const screen = slug[0] ?? "";
   if (screen === "onboarding") return <AppShell bare><Onboarding /></AppShell>;
@@ -76,21 +94,11 @@ function Answer() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const controller = new AbortController();
+    let active = true;
     setAnswer(null);
     setError(false);
-    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/v1/ask`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: question, answer_mode: "both" }),
-      signal: controller.signal,
-    }).then((response) => {
-      if (!response.ok) throw new Error(`API request failed: ${response.status}`);
-      return response.json() as Promise<AnswerPayload>;
-    }).then(setAnswer).catch((requestError: Error) => {
-      if (requestError.name !== "AbortError") setError(true);
-    });
-    return () => controller.abort();
+    requestAnswer(question).then((payload) => { if (active) setAnswer(payload); }).catch(() => { if (active) setError(true); });
+    return () => { active = false; };
   }, [question]);
 
   if (error) return <div className="narrow-page"><Header title="تعذر الاتصال" back /><section className="escalation-card"><h1>تعذر الوصول إلى خدمة الإجابة</h1><p>تحقق من تشغيل الخادم المحلي ثم أعد المحاولة.</p></section></div>;

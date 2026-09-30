@@ -121,6 +121,7 @@ class QueryAnalysis(BaseModel):
 
 
 class RetrievedEvidence(BaseModel):
+    chunk_id: str | None = None
     fatwa_id: int
     title: str
     excerpt: str
@@ -137,6 +138,21 @@ class RetrievedEvidence(BaseModel):
     original_reference: list[SourceReference] = Field(default_factory=list)
     source_type: str = "fiqh_encyclopedia_entry"
     conflicting_positions: bool = False
+    dense_score: float | None = None
+    dense_rank: int | None = None
+    lexical_score: float | None = None
+    lexical_rank: int | None = None
+    fused_score: float | None = None
+    fused_rank: int | None = None
+
+
+class GroundedGeneration(BaseModel):
+    state: EvidenceState
+    summary: str | None = None
+    explanation: str | None = None
+    citation_chunk_ids: list[str] = Field(default_factory=list)
+    clarification_question: str | None = None
+    escalation_reason: str | None = None
 
 
 class EvidenceDecision(BaseModel):

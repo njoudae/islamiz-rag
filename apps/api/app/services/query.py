@@ -6,6 +6,18 @@ class QueryUnderstandingService:
     async def analyze(self, query: str, language_hint: str | None = None) -> QueryAnalysis:
         language = language_hint or ("ar" if re.search(r"[\u0600-\u06ff]", query) else "en")
         normalized = query.casefold()
+        religious_terms = (
+            "صلاة", "أقصر", "قصر", "سفر", "مسافر", "زكاة", "صوم", "صيام", "حج",
+            "طلاق", "ميراث", "فتوى", "حكم", "prayer", "travel", "fasting", "zakat",
+            "hajj", "divorce", "inheritance", "islamic ruling",
+        )
+        clearly_out_of_scope = (
+            "طقس", "الجو", "مباراة", "كرة القدم", "سعر السهم", "اكتب كود", "برمجة",
+            "weather", "football", "stock price", "write code", "programming",
+        )
+        intent = "fatwa_question"
+        if any(term in normalized for term in clearly_out_of_scope) and not any(term in normalized for term in religious_terms):
+            intent = "out_of_scope"
         category = "الصلاة" if any(term in normalized for term in ("صلاة", "أقصر", "prayer")) else None
         entities: dict[str, object] = {}
         duration = re.search(r"(\d+|[٠-٩]+|يوم|يومان|ثلاثة|ثلاث|أربعة|أربع|خمسة|خمس|ستة|ست|سبعة|سبع|ثمانية|ثمان|تسعة|تسع|عشرة|عشر)\s*(?:أيام|ايام|يومًا|يوما|days?)", query, re.I)
@@ -21,9 +33,10 @@ class QueryUnderstandingService:
         if travel:
             entities["travel"] = True
         missing: list[str] = []
-        if travel and "duration_days" not in entities:
+        stay_context = any(term in normalized for term in ("إقامة", "اقامة", "أقيم", "اقيم", "سأقيم", "بجلس", "أبقى", "مدة", "stay"))
+        if travel and stay_context and "duration_days" not in entities:
             missing.append("duration_days")
         complexity = []
-        if any(term in normalized for term in ("طلاق", "ميراث", "court", "custody")) and len(query) > 250:
+        if any(term in normalized for term in ("طلاق", "ميراث", "تركة", "حضانة", "قضاء", "court", "custody", "divorce", "inheritance")):
             complexity.append("personal_high_context_case")
-        return QueryAnalysis(category=category, topic="صلاة المسافر" if travel else None, entities=entities, language=language, needs_clarification=bool(missing), missing_facts=missing, complexity_flags=complexity)
+        return QueryAnalysis(intent=intent, category=category, topic="صلاة المسافر" if travel else None, entities=entities, language=language, needs_clarification=bool(missing), missing_facts=missing, complexity_flags=complexity)

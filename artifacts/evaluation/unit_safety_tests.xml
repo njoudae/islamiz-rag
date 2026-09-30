@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="30" time="4.867" timestamp="2026-09-30T00:24:12.871344+03:00" hostname="MSI"><testcase classname="tests.test_approved_source_adapter" name="test_preserves_dorar_hierarchy_and_source_identity" time="0.078" /><testcase classname="tests.test_approved_source_adapter" name="test_extracts_only_explicit_madhhabs_scholars_references_and_qa" time="0.013" /><testcase classname="tests.test_approved_source_adapter" name="test_missing_document_level_metadata_stays_null" time="0.039" /><testcase classname="tests.test_chunking_and_audit" name="test_short_fatwa_is_one_source_identified_chunk" time="0.004" /><testcase classname="tests.test_chunking_and_audit" name="test_dialogue_pairs_keep_source_identity" time="0.003" /><testcase classname="tests.test_chunking_and_audit" name="test_audit_counts_missing_questions_audio_and_duplicates" time="0.003" /><testcase classname="tests.test_parser" name="test_parses_explicit_question_answer_audio_and_source_identity" time="0.056" /><testcase classname="tests.test_parser" name="test_preserves_follow_up_dialogue" time="0.029" /><testcase classname="tests.test_parser" name="test_deduplicates_links_by_external_id" time="0.003" /><testcase classname="tests.test_parser" name="test_arabic_normalization_is_retrieval_only" time="0.002" /><testcase classname="tests.test_rag" name="test_answerable_requires_direct_multi_signal_evidence" time="0.003"><failure message="AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat... 'ANSWERABLE'&gt;&#10;  &#10;  - ANSWERABLE&#10;  + INSUFFICIENT_EVIDENCE">def test_answerable_requires_direct_multi_signal_evidence():
+        decision = EvidenceSufficiencyEvaluator().decide(QueryAnalysis(), [evidence()])
+&gt;       assert decision.state == EvidenceState.ANSWERABLE
+E       AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat... 'ANSWERABLE'&gt;
+E         
+E         - ANSWERABLE
+E         + INSUFFICIENT_EVIDENCE
+
+apps\api\tests\test_rag.py:18: AssertionError</failure></testcase><testcase classname="tests.test_rag" name="test_unsupported_question_escalates" time="0.002" /><testcase classname="tests.test_rag" name="test_clarification_for_missing_travel_duration" time="0.001" /><testcase classname="tests.test_rag" name="test_no_generated_answer_without_citation" time="0.007" /><testcase classname="tests.test_rag" name="test_answer_service_preserves_source_url" time="0.010"><failure message="AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat... 'ANSWERABLE'&gt;&#10;  &#10;  - ANSWERABLE&#10;  + INSUFFICIENT_EVIDENCE">@pytest.mark.asyncio
+    async def test_answer_service_preserves_source_url():
+        service = AnswerService(DemoFatwaRepository(), MockRerankerProvider(), MockGenerationProvider())
+        response = await service.answer(AskRequest(query="أنا مسافر وسأقيم أربعة أيام، هل أقصر الصلاة؟"))
+&gt;       assert response.state == EvidenceState.ANSWERABLE
+E       AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat... 'ANSWERABLE'&gt;
+E         
+E         - ANSWERABLE
+E         + INSUFFICIENT_EVIDENCE
+
+apps\api\tests\test_rag.py:42: AssertionError</failure></testcase><testcase classname="tests.test_rag" name="test_answer_service_refuses_unmatched_question" time="0.006" /><testcase classname="tests.test_submission_safety" name="test_answerable_requires_source" time="0.007"><failure message="AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat... 'ANSWERABLE'&gt;&#10;  &#10;  - ANSWERABLE&#10;  + INSUFFICIENT_EVIDENCE">@pytest.mark.asyncio
+    async def test_answerable_requires_source():
+        response = await _service().answer(AskRequest(query="أنا مسافر وسأقيم أربعة أيام، هل أقصر الصلاة؟"))
+&gt;       assert response.state == EvidenceState.ANSWERABLE
+E       AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat... 'ANSWERABLE'&gt;
+E         
+E         - ANSWERABLE
+E         + INSUFFICIENT_EVIDENCE
+
+apps\api\tests\test_submission_safety.py:52: AssertionError</failure></testcase><testcase classname="tests.test_submission_safety" name="test_no_source_no_answer" time="0.006" /><testcase classname="tests.test_submission_safety" name="test_canonical_source_preserved" time="0.012" /><testcase classname="tests.test_submission_safety" name="test_missing_context_requests_clarification" time="0.012"><failure message="AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat...LARIFICATION'&gt;&#10;  &#10;  - NEEDS_CLARIFICATION&#10;  + INSUFFICIENT_EVIDENCE">@pytest.mark.asyncio
+    async def test_missing_context_requests_clarification():
+        response = await _service().answer(AskRequest(query="أنا مسافر، هل أقصر الصلاة؟"))
+&gt;       assert response.state == EvidenceState.NEEDS_CLARIFICATION
+E       AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat...LARIFICATION'&gt;
+E         
+E         - NEEDS_CLARIFICATION
+E         + INSUFFICIENT_EVIDENCE
+
+apps\api\tests\test_submission_safety.py:76: AssertionError</failure></testcase><testcase classname="tests.test_submission_safety" name="test_insufficient_evidence_escalates" time="0.011" /><testcase classname="tests.test_submission_safety" name="test_complex_case_does_not_generate_definitive_ruling" time="0.006" /><testcase classname="tests.test_submission_safety" name="test_conflicting_evidence_is_not_merged" time="0.003"><failure message="AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat...ING_EVIDENCE'&gt;&#10;  &#10;  - CONFLICTING_EVIDENCE&#10;  + INSUFFICIENT_EVIDENCE">def test_conflicting_evidence_is_not_merged():
+        evidence = [_evidence(conflicting_positions=True), _evidence(fatwa_id=900002)]
+        decision = EvidenceSufficiencyEvaluator().decide(QueryAnalysis(), evidence)
+&gt;       assert decision.state == EvidenceState.CONFLICTING_EVIDENCE
+E       AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat...ING_EVIDENCE'&gt;
+E         
+E         - CONFLICTING_EVIDENCE
+E         + INSUFFICIENT_EVIDENCE
+
+apps\api\tests\test_submission_safety.py:101: AssertionError</failure></testcase><testcase classname="tests.test_submission_safety" name="test_out_of_scope_does_not_generate_fatwa" time="0.006" /><testcase classname="tests.test_submission_safety" name="test_original_source_text_is_preserved" time="0.014" /><testcase classname="tests.test_submission_safety" name="test_retrieved_chunk_retains_source_identity" time="0.020" /><testcase classname="tests.test_submission_safety" name="test_unverified_contact_is_not_displayed" time="0.007" /><testcase classname="tests.test_submission_safety" name="test_no_secret_in_public_configuration" time="0.006" /><testcase classname="tests.test_submission_safety" name="test_cross_language_retrieval" time="0.006"><failure message="AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat... 'ANSWERABLE'&gt;&#10;  &#10;  - ANSWERABLE&#10;  + INSUFFICIENT_EVIDENCE">@pytest.mark.asyncio
+    async def test_cross_language_retrieval():
+        response = await _service().answer(AskRequest(query="I am traveling for 4 days. May I shorten the prayer?"))
+&gt;       assert response.state == EvidenceState.ANSWERABLE
+E       AssertionError: assert &lt;EvidenceStat...ENT_EVIDENCE'&gt; == &lt;EvidenceStat... 'ANSWERABLE'&gt;
+E         
+E         - ANSWERABLE
+E         + INSUFFICIENT_EVIDENCE
+
+apps\api\tests\test_submission_safety.py:149: AssertionError</failure></testcase><testcase classname="tests.test_submission_safety" name="test_voice_provider_contract" time="0.010" /></testsuite></testsuites>

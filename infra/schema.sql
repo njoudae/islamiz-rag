@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS embeddings (
   provider text NOT NULL,
   model text NOT NULL,
   dimensions integer NOT NULL,
-  embedding vector(1024) NOT NULL,
+  embedding vector(384) NOT NULL,
   embedded_at timestamptz NOT NULL DEFAULT now()
 );
 

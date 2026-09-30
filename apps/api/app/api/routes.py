@@ -1,13 +1,26 @@
 from fastapi import APIRouter, File, HTTPException, Response, UploadFile
 from app.models.domain import AnswerResponse, AskRequest, AuthorityContact
-from app.providers.base import MockGenerationProvider, MockRerankerProvider, MockSpeechToTextProvider, MockTextToSpeechProvider
-from app.repositories.base import DemoFatwaRepository, EmptyContactRepository
+from app.config import get_settings
+from app.providers.base import MockSpeechToTextProvider, MockTextToSpeechProvider
+from app.providers.real import E5EmbeddingProvider, OpenAIGenerationProvider, QwenRerankerProvider
+from app.repositories.base import EmptyContactRepository
+from app.repositories.postgres import PostgresFatwaRepository
 from app.services.answers import AnswerService
 from app.speech.service import SpeechService
 
 
 router = APIRouter()
-answer_service = AnswerService(DemoFatwaRepository(), MockRerankerProvider(), MockGenerationProvider())
+settings = get_settings()
+embedding_provider = E5EmbeddingProvider(settings.e5_model)
+answer_service = AnswerService(
+    PostgresFatwaRepository(settings.database_url, embedding_provider),
+    QwenRerankerProvider(settings.qwen_reranker_model, device="cpu", top_k=5),
+    OpenAIGenerationProvider(
+        settings.openai_api_key.get_secret_value() if settings.openai_api_key else "",
+        settings.openai_generation_model,
+    ),
+    persist_runtime_artifacts=True,
+)
 speech_service = SpeechService(MockSpeechToTextProvider(), {"ar": MockTextToSpeechProvider(), "en": MockTextToSpeechProvider(), "default": MockTextToSpeechProvider()})
 contact_repository = EmptyContactRepository()
 
