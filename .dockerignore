@@ -1,9 +1,9 @@
-# Applies to builds that use the repository root as context (AI service, Next.js web).
-# apps/site has its own build context and its own .dockerignore.
+# Applies to builds that use the repository root as context (AI service, single-container demo).
+# apps/site also has its own build context and its own .dockerignore.
 .git
-.env
-.env.*
-!.env.example
+**/.env
+**/.env.*
+!**/.env.example
 
 **/node_modules
 **/.next
@@ -13,7 +13,20 @@
 **/.venv
 **/.venv-real
 
-apps/site
+# The website's source is needed by deploy/render/Dockerfile; its local state is not.
+apps/site/vendor
+apps/site/public/build
+apps/site/public/hot
+apps/site/public/storage
+apps/site/storage/app/private/*
+apps/site/storage/framework/cache/data/*
+apps/site/storage/framework/sessions/*
+apps/site/storage/framework/views/*
+apps/site/storage/logs/*
+apps/site/bootstrap/cache/*.php
+apps/site/database/*.sqlite
+apps/site/tests
+
 docs
 assets
 evaluation
