@@ -5,7 +5,7 @@ Claims are intentionally narrower than aspirations. `IMPLEMENTED` means executab
 | Claim | Status | Evidence |
 |---|---|---|
 | Targets **الحوار المعرفي والإجابات الموثوقة** | IMPLEMENTED | `submission.json`, `JUDGING.md` |
-| Uses the approved Dorar Fiqh Encyclopedia collection by default | IMPLEMENTED | `apps/api/app/models/domain.py`, `apps/api/app/ingestion/adapters.py`, `apps/web/lib/content.ts` |
+| Uses the approved Dorar Fiqh Encyclopedia collection by default | IMPLEMENTED | `apps/api/app/models/domain.py`, `apps/api/app/ingestion/adapters.py`, `apps/site/resources/js/lib/content.js` |
 | Ibn Baz is not the default or fallback | IMPLEMENTED | `SourceCollection`, `adapter_for`, `DemoFatwaRepository`; test coverage in `test_submission_safety.py` |
 | “No Source = No Answer” | IMPLEMENTED | `AnswerResponse.no_answer_without_source`, `AnswerService.answer`, `test_no_source_no_answer` |
 | Original source identity is preserved | IMPLEMENTED | `FatwaDocument`, `FatwaChunk`, `Citation`; adapter/chunk/source tests |

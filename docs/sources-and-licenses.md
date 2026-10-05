@@ -10,13 +10,14 @@ Audited **2026-09-29**. `ACTUALLY USED` means imported, executed, or presented b
 | ACTUALLY USED | Official challenge website | Competition source | [islamicaich.org](https://islamicaich.org/) | Tracks, participation, submission requirements | Rights reserved; informational citation | Official Arabic text controls; do not imply organizer endorsement | 2026-09-29 |
 | ACTUALLY USED | Official participant guide | Competition PDF | [official PDF](https://islamicaich.org/files/Hackathon/i2xgA3mxVhrbRe0ReLlA86kTDbFZ9QQ9eb856dq8.pdf) | Deliverables and judging criteria | Rights reserved; participant information use | Summarized, not redistributed | 2026-09-29 |
 | ACTUALLY USED | Official scientific annex | Competition reference policy | Participant portal; public website names the annex but exposes no indexed public content link | Approved-source scope | Organizer material | Team must confirm exact portal release before submission | 2026-09-29 |
-| ACTUALLY USED | Next.js | Web framework | 16.3.5 | Web application | MIT | Preserve copyright/license notices | 2026-09-29 |
-| ACTUALLY USED | React / React DOM | UI library | 19.3.0 | UI components | MIT | Preserve notices | 2026-09-29 |
-| ACTUALLY USED | Lucide React | Icons | 0.468.0 | UI icons | ISC | Preserve notice | 2026-09-29 |
-| ACTUALLY USED | Radix Slot | UI primitive | 1.3.3 | Component composition | MIT | Preserve notices | 2026-09-29 |
-| ACTUALLY USED | clsx | Utility | 2.1.1 | CSS class composition | MIT | Preserve notices | 2026-09-29 |
-| ACTUALLY USED | tailwind-merge | Utility | 2.6.1 | Merge utility classes | MIT | Preserve notices | 2026-09-29 |
-| ACTUALLY USED | Tailwind CSS / PostCSS | Build tooling | Locked in `package-lock.json` | Styling build | MIT | Development/build dependency | 2026-09-29 |
+| ACTUALLY USED | Dorar encyclopedia table of contents | Titles and links | [dorar.net/feqhia](https://dorar.net/feqhia), stored in `apps/site/resources/js/data/encyclopedia.json` | The encyclopedia page: each of the 52 books and its top-level chapters links to its own Dorar page | Rights reserved; titles and links only, no content copied | Read once from the public table of contents (robots.txt allows it); every book address confirmed against the page title; attribution and links preserved | 2026-10-05 |
+| ACTUALLY USED | Laravel | Web framework | 13.x (`apps/site/composer.lock`) | Website: pages, public API, admin area | MIT | Preserve notices | 2026-10-05 |
+| ACTUALLY USED | Inertia.js (Laravel adapter and Vue client) | Page bridge | 3.x | Server-driven pages without a separate API | MIT | Preserve notices | 2026-10-05 |
+| ACTUALLY USED | Vue | UI library | 3.5 | Visitor pages and admin area | MIT | Preserve notices | 2026-10-05 |
+| ACTUALLY USED | Vite / laravel-vite-plugin / @vitejs/plugin-vue | Build tooling | Locked in `apps/site/package-lock.json` | Frontend build | MIT | Development/build dependency | 2026-10-05 |
+| ACTUALLY USED | FrankenPHP (with Caddy) | PHP application server | `dunglas/frankenphp:1-php8.4` image | Serves the website container | MIT (FrankenPHP), Apache-2.0 (Caddy) | Preserve notices | 2026-10-05 |
+| ACTUALLY USED | Lucide icons | Icon paths | Inlined in `apps/site/resources/js/lib/icons.js` | UI icons | ISC | Preserve notice | 2026-10-05 |
+| ACTUALLY USED | Inter, Tajawal, Amiri | Web fonts | Google Fonts, loaded by the browser | UI and quotation typefaces | SIL Open Font License 1.1 | Loaded from Google's servers at page view | 2026-10-05 |
 | ACTUALLY USED | FastAPI | API framework | `>=0.115,<1` | HTTP API | MIT | Preserve notices | 2026-09-29 |
 | ACTUALLY USED | Uvicorn | ASGI server | `>=0.32,<1` | Local API server | BSD-3-Clause | Preserve notices and non-endorsement clause | 2026-09-29 |
 | ACTUALLY USED | Pydantic Settings | Configuration | `>=2.6,<3` | Environment parsing | MIT | Preserve notices | 2026-09-29 |
