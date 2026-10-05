@@ -64,6 +64,12 @@ COPY apps/site/docker/php.ini "$PHP_INI_DIR/conf.d/zz-daleel.ini"
 # Two small processes share 512 MB, so keep PHP's shared cache modest.
 RUN echo "opcache.memory_consumption = 64" > "$PHP_INI_DIR/conf.d/zzz-small-host.ini"
 
+# The stock binary carries a file capability (to bind ports below 1024). Hosts that forbid gaining
+# privileges refuse to start such a binary as a non-root user; a plain copy drops the capability,
+# which is not needed on a high port.
+RUN cp /usr/local/bin/frankenphp /usr/local/bin/frankenphp.plain \
+    && mv /usr/local/bin/frankenphp.plain /usr/local/bin/frankenphp
+
 COPY --from=vendor /app /app
 COPY --from=assets /app/public/build public/build
 COPY deploy/render/start.sh /usr/local/bin/daleel-start
