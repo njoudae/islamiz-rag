@@ -173,6 +173,18 @@ class Citation(BaseModel):
     madhhabs: list[str] = Field(default_factory=list)
     original_reference: list[SourceReference] = Field(default_factory=list)
     source_type: str = "fiqh_encyclopedia_entry"
+    # Where the passage sits in the encyclopedia: book, then its nested sections.
+    category_path: list[str] = Field(default_factory=list)
+
+
+class RelatedSource(BaseModel):
+    """A passage the pipeline considered, reported for analytics even when no answer is given."""
+
+    fatwa_id: int
+    title: str
+    source_url: str
+    category_path: list[str] = Field(default_factory=list)
+    reranker_score: float = Field(ge=0, le=1)
 
 
 class AnswerResponse(BaseModel):
@@ -183,6 +195,11 @@ class AnswerResponse(BaseModel):
     clarification_question: str | None = None
     escalation_message: str | None = None
     citations: list[Citation] = Field(default_factory=list)
+    # Diagnostics for the website's admin area. None of these change the answer itself.
+    related: list[RelatedSource] = Field(default_factory=list)
+    evidence_score: float | None = Field(default=None, ge=0, le=1)
+    reasons: list[str] = Field(default_factory=list)
+    model: str | None = None
 
     @model_validator(mode="after")
     def no_answer_without_source(self) -> "AnswerResponse":

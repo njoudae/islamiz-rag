@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-from app.models.domain import AnswerResponse, AskRequest, Citation, EvidenceState
+from app.models.domain import AnswerResponse, AskRequest, Citation, EvidenceState, RelatedSource, RetrievedEvidence
 from app.providers.base import GenerationProvider, RerankerProvider
 from app.rag.evidence import EvidenceSufficiencyEvaluator
 from app.repositories.base import FatwaRepository
@@ -34,12 +34,13 @@ class AnswerService:
         trace["evidence_gate"] = decision.model_dump(mode="json")
         trace["final_evidence"] = [item.model_dump(mode="json") for item in evidence[:3]]
         self._persist_trace(trace)
+        diagnostics = self._diagnostics(evidence, decision.reasons)
         if decision.state == EvidenceState.NEEDS_CLARIFICATION:
-            response = AnswerResponse(state=decision.state, language=analysis.language, clarification_question=decision.clarification_question)
+            response = AnswerResponse(state=decision.state, language=analysis.language, clarification_question=decision.clarification_question, **diagnostics)
             return self._finish(trace, response, citation_valid=True)
         if decision.state != EvidenceState.ANSWERABLE:
             message = "هذه المسألة تحتاج إلى تفاصيل أو نظر من مختص، ولم نجد في المصادر المتاحة ما يكفي لإعطائك جوابًا موثقًا."
-            response = AnswerResponse(state=decision.state, language=analysis.language, escalation_message=message)
+            response = AnswerResponse(state=decision.state, language=analysis.language, escalation_message=message, **diagnostics)
             return self._finish(trace, response, citation_valid=True)
 
         generated = await self.generator.grounded_summary(request.query, evidence, analysis.language)
@@ -51,6 +52,7 @@ class AnswerService:
                 language=analysis.language,
                 clarification_question=generated.clarification_question,
                 escalation_message=generated.escalation_reason,
+                **{**diagnostics, "reasons": ["generation model judged the evidence insufficient for an answer"]},
             )
             return self._finish(trace, response, citation_valid=True)
         allowed = {item.chunk_id: item for item in evidence if item.chunk_id}
@@ -60,6 +62,7 @@ class AnswerService:
                 state=EvidenceState.INSUFFICIENT_EVIDENCE,
                 language=analysis.language,
                 escalation_message="رُفضت الإجابة لأن الاستشهادات لم تطابق الأدلة المسترجعة من المصدر المعتمد.",
+                **{**diagnostics, "reasons": ["citations did not match the retrieved evidence"]},
             )
             return self._finish(trace, response, citation_valid=False)
         selected = []
@@ -81,10 +84,29 @@ class AnswerService:
             madhhabs=item.madhhabs,
             original_reference=item.original_reference,
             source_type=item.source_type,
+            category_path=item.category_path,
         ) for item in selected[:3]]
         logger.info("citation_validation %s", json.dumps({"valid": True, "citation_chunk_ids": generated.citation_chunk_ids, "document_ids": [item.fatwa_id for item in selected]}, ensure_ascii=False))
-        response = AnswerResponse(state=EvidenceState.ANSWERABLE, language=analysis.language, summary=generated.summary, explanation=generated.explanation, citations=citations)
+        response = AnswerResponse(state=EvidenceState.ANSWERABLE, language=analysis.language, summary=generated.summary, explanation=generated.explanation, citations=citations, **diagnostics)
         return self._finish(trace, response, citation_valid=True)
+
+    def _diagnostics(self, evidence: list[RetrievedEvidence], reasons: list[str]) -> dict:
+        """What the pipeline looked at, for the website's analytics. Never shown as an answer."""
+        return {
+            "related": [
+                RelatedSource(
+                    fatwa_id=item.fatwa_id,
+                    title=item.title,
+                    source_url=item.source_url,
+                    category_path=item.category_path,
+                    reranker_score=item.reranker_score,
+                )
+                for item in evidence[:3]
+            ],
+            "evidence_score": max((item.reranker_score for item in evidence), default=None),
+            "reasons": list(reasons),
+            "model": getattr(self.generator, "model", None),
+        }
 
     def _artifact_root(self) -> Path:
         return Path(__file__).resolve().parents[4] / "artifacts"
