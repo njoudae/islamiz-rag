@@ -4,7 +4,7 @@ import AnswerCard from '../../components/AnswerCard.vue';
 import Icon from '../../components/Icon.vue';
 import StBadge from '../../components/StBadge.vue';
 import PublicLayout from '../../layouts/PublicLayout.vue';
-import { BOOK_GROUPS, DORAR, KB, STATUS, ST_ORDER } from '../../lib/content.js';
+import { BOOK_GROUPS, DORAR, KB, STATUS, ST_PUBLIC } from '../../lib/content.js';
 
 defineOptions({ layout: PublicLayout });
 
@@ -81,16 +81,16 @@ const sample = { ...KB.wudu_wind, latency: 2.4, mode: 'example', ch: 'voice' };
     <section class="section">
         <div class="wrap">
             <div class="sec-head">
-                <h2 class="h2">سبع نتائج ممكنة، وكلها واضحة</h2>
+                <h2 class="h2">ست نتائج ممكنة، وكلها واضحة</h2>
                 <p class="muted" style="line-height: 1.8">لا يتظاهر دليل بالمعرفة. يصنّف كل سؤال في واحدة من هذه النتائج، ويخبرك بها في رأس الإجابة.</p>
             </div>
             <div class="outcomes">
-                <div v-for="s in ST_ORDER" :key="s" class="outcome">
+                <div v-for="s in ST_PUBLIC" :key="s" class="outcome">
                     <div><StBadge :state="s" /></div>
                     <p>{{ STATUS[s].pub }}</p>
                     <div class="gets"><Icon name="arrow-left" /><span>{{ STATUS[s].gets }}</span></div>
                 </div>
-                <div class="outcome wide">
+                <div class="outcome wide" style="grid-column: 1 / -1">
                     <p style="color: var(--foreground)">اطرح سؤالك، وستعرف نتيجته في رأس الإجابة.</p>
                     <div><Link class="btn" href="/ask">اسأل دليل<Icon name="arrow-left" /></Link></div>
                 </div>

@@ -18,21 +18,21 @@ export const STATUS = {
   NEEDS_CLARIFICATION: {
     ar: 'يحتاج توضيحاً', icon: 'circle-question-mark',
     pub: 'سؤالك يحتمل أكثر من مسألة، فيسألك سؤالاً واحداً قبل أن يجيب.',
-    gets: 'سؤال استيضاح مع خيارات سريعة',
+    gets: 'سؤال استيضاح واحد، ثم الإجابة بعد ردّك',
     admin: 'حسّن أسئلة الاستيضاح وخياراتها حتى يكمل السائل.',
     actLabel: 'افتح الطابور', actRoute: 'admin-review', actFilter: 'NEEDS_CLARIFICATION'
   },
   INSUFFICIENT_EVIDENCE: {
     ar: 'أدلة غير كافية', icon: 'book-x',
     pub: 'لم يجد في الموسوعة ما يكفي للإجابة بثقة، فلا يخمّن.',
-    gets: 'أقرب الأبواب، واقتراح جهة تسألها',
+    gets: 'تنبيه صريح بأن المادة المتاحة لا تكفي',
     admin: 'فجوة معرفية: أضف مصدراً أو وسّع الفهرسة.',
     actLabel: 'فجوات المعرفة', actRoute: 'admin-gaps'
   },
   COMPLEX_CASE: {
     ar: 'حالة معقّدة', icon: 'scale',
     pub: 'المسألة تتوقف على تفاصيل شخصية كالميراث والطلاق، فيحيلك إلى مفتٍ.',
-    gets: 'سبب الإحالة، والجهة المناسبة',
+    gets: 'إحالة إلى جهة إفتاء مؤهلة',
     admin: 'تحقّق أن قواعد الإحالة لا تحجب أسئلة يمكن إجابتها.',
     actLabel: 'افتح الطابور', actRoute: 'admin-review', actFilter: 'COMPLEX_CASE'
   },
@@ -45,8 +45,8 @@ export const STATUS = {
   },
   OUT_OF_SCOPE: {
     ar: 'خارج النطاق', icon: 'ban',
-    pub: 'السؤال ليس مسألة فقهية، فيوضّح ذلك ويدلّك على المصدر المناسب.',
-    gets: 'توضيح النطاق، ورابط بديل إن وُجد',
+    pub: 'السؤال ليس مسألة فقهية، فيوضّح ذلك ولا يجيب عنه.',
+    gets: 'توضيح بأن السؤال خارج اختصاصه',
     admin: 'إن تكرر موضوع، فكّر في ربطه بموسوعة أخرى.',
     actLabel: 'فجوات المعرفة', actRoute: 'admin-gaps'
   },
@@ -62,6 +62,9 @@ export const ST_ORDER = ['ANSWERABLE','NEEDS_CLARIFICATION','INSUFFICIENT_EVIDEN
 /* Order used where colours touch (stacked bar): keeps similar hues apart. */
 export const ST_BAR = ['ANSWERABLE','CONFLICTING_EVIDENCE','NEEDS_CLARIFICATION','COMPLEX_CASE','INSUFFICIENT_EVIDENCE','OUT_OF_SCOPE','FAILED'];
 export const ST_CLASSIFY = ST_ORDER.filter(s => s !== 'FAILED');
+/* What a visitor can get today. The current pipeline never reports conflicting evidence;
+   the state stays defined for the admin area and for questions already recorded. */
+export const ST_PUBLIC = ST_ORDER.filter(s => s !== 'CONFLICTING_EVIDENCE');
 
 export const DORAR = 'https://dorar.net/feqhia';
 
