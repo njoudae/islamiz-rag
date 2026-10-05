@@ -40,6 +40,11 @@ class Settings(BaseSettings):
         Path(__file__).resolve().parents[3] / "data" / "conversations.sqlite3"
     )
     retrieval_device: str | None = None
+    # Where the question is embedded: "local" loads the model in this process;
+    # "cloudflare" calls the same model on Cloudflare Workers AI (for small hosts).
+    query_embedding_backend: str = "local"
+    cloudflare_account_id: str | None = None
+    cloudflare_api_token: SecretStr | None = None
 
 
 @lru_cache

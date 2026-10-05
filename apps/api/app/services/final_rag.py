@@ -50,8 +50,11 @@ class FinalRagService:
         api_key: str,
         generation_model: str,
         retrieval_device: str | None = None,
+        query_embedder: Any | None = None,
     ) -> None:
         self.index_dir = index_dir
+        # Optional hosted copy of the index's model; when set, no local model is loaded.
+        self.query_embedder = query_embedder
         self.manifest = json.loads((index_dir / "manifest.json").read_text(encoding="utf-8"))
         self.units = [
             json.loads(line) for line in (index_dir / "units.jsonl").open(encoding="utf-8") if line.strip()
@@ -90,14 +93,18 @@ class FinalRagService:
         return self._retrieve_top_sync(query, 1)[0]
 
     def _retrieve_top_sync(self, query: str, top_k: int = 5) -> list[tuple[dict[str, Any], float]]:
-        model = self._load_embedding_model()
-        vector = model.encode(
-            [normalize_arabic(query)],
-            batch_size=1,
-            normalize_embeddings=True,
-            convert_to_numpy=True,
-            show_progress_bar=False,
-        )[0].astype("float32")
+        if self.query_embedder is not None:
+            vector = np.asarray(self.query_embedder.embed_query(normalize_arabic(query)), dtype="float32")
+            vector = vector / np.linalg.norm(vector)
+        else:
+            model = self._load_embedding_model()
+            vector = model.encode(
+                [normalize_arabic(query)],
+                batch_size=1,
+                normalize_embeddings=True,
+                convert_to_numpy=True,
+                show_progress_bar=False,
+            )[0].astype("float32")
         scores = np.asarray(self.embeddings) @ vector
         order = np.argsort(-scores, kind="stable")[:top_k]
         return [(self.units[int(index)], float(scores[int(index)])) for index in order]

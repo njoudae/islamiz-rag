@@ -30,11 +30,20 @@ def require_internal_token(token: str | None = Security(internal_token_header)) 
 public_router = APIRouter()
 router = APIRouter(dependencies=[Depends(require_internal_token)])
 openai_api_key = settings.openai_api_key.get_secret_value() if settings.openai_api_key else ""
+query_embedder = None
+if settings.query_embedding_backend == "cloudflare":
+    from app.providers.hosted_embedding import CloudflareBgeM3
+
+    query_embedder = CloudflareBgeM3(
+        settings.cloudflare_account_id or "",
+        settings.cloudflare_api_token.get_secret_value() if settings.cloudflare_api_token else "",
+    )
 answer_service = FinalRagService(
     Path(settings.final_index_dir),
     openai_api_key,
     settings.openai_generation_model,
     settings.retrieval_device,
+    query_embedder,
 )
 speech_service = None
 if (
