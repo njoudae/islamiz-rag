@@ -44,8 +44,8 @@ class InsightsTest extends TestCase
         $this->aiAnswers([
             'state' => 'ANSWERABLE',
             'summary' => 'يقصر',
-            'citations' => [['fatwa_id' => 1455, 'title' => 't', 'source_url' => 'https://dorar.net/feqhia/1455', 'category_path' => $path]],
-            'related' => [['fatwa_id' => 1455, 'title' => 't', 'source_url' => 'https://dorar.net/feqhia/1455', 'category_path' => $path, 'reranker_score' => 0.93]],
+            'citations' => [['fatwa_id' => 1455, 'title' => 't', 'source_url' => 'https://dorar.net/feqhia/1455', 'hierarchy_path' => $path]],
+            'related' => [['fatwa_id' => 1455, 'title' => 't', 'source_url' => 'https://dorar.net/feqhia/1455', 'hierarchy_path' => $path, 'score' => 0.93]],
             'evidence_score' => 0.93,
             'reasons' => ['direct source coverage', 'strong reranker score'],
             'model' => 'gpt-test',
@@ -67,8 +67,8 @@ class InsightsTest extends TestCase
         $this->aiAnswers([
             'state' => 'INSUFFICIENT_EVIDENCE',
             'escalation_message' => 'لا دليل كافٍ',
-            'related' => [['fatwa_id' => 9, 'title' => 't', 'source_url' => 'https://dorar.net/feqhia/9', 'category_path' => ['كتاب الصلاة', 'باب', 'الفصل الثاني: جمع الصلاة'], 'reranker_score' => 0.00001]],
-            'evidence_score' => 0.00001,
+            'related' => [['fatwa_id' => 9, 'title' => 't', 'source_url' => 'https://dorar.net/feqhia/9', 'hierarchy_path' => ['كتاب الصلاة', 'باب', 'الفصل الثاني: جمع الصلاة'], 'score' => 0.41]],
+            'evidence_score' => 0.41,
         ]);
 
         $this->postJson('/api/v1/ask', ['query' => 'ما حكم تداول العملات الرقمية الجديدة؟'])->assertOk();
@@ -76,7 +76,7 @@ class InsightsTest extends TestCase
         $question = Question::sole();
         $this->assertNull($question->book);
         $this->assertNull($question->chapter);
-        $this->assertSame(0, $question->confidence);
+        $this->assertSame(41, $question->confidence);
     }
 
     public function test_an_older_ai_service_without_the_new_fields_still_works(): void

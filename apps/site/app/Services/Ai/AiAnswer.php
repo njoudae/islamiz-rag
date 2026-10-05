@@ -11,16 +11,18 @@ use App\Support\Arabic;
 final readonly class AiAnswer
 {
     /**
-     * Below this reranker score the "nearest" passage is not about the question at all,
-     * so its book and chapter say nothing. Matches the evidence gate's own floor.
+     * Below this similarity the "nearest" passage is not about the question at all, so its
+     * book and chapter say nothing. In the retrieval benchmark the best match for a question
+     * the index covers never scored under 0.55.
      */
-    private const RELEVANT_SCORE = 0.05;
+    private const RELEVANT_SCORE = 0.55;
 
     /**
      * @param  list<array<string, mixed>>  $citations
      * @param  list<array<string, mixed>>  $related  Passages the pipeline considered, best first.
-     * @param  ?float  $evidenceScore  Best reranker score, 0 to 1.
-     * @param  list<string>  $reasons  Why the evidence gate chose this state.
+     * @param  ?float  $evidenceScore  Best similarity between the question and a passage, 0 to 1.
+     * @param  list<string>  $reasons  Why the pipeline chose this state.
+     * @param  ?string  $conversationId  The AI service's conversation, sent back with a follow-up.
      */
     public function __construct(
         public AnswerState $state,
@@ -34,6 +36,7 @@ final readonly class AiAnswer
         public ?float $evidenceScore = null,
         public array $reasons = [],
         public ?string $model = null,
+        public ?string $conversationId = null,
     ) {}
 
     /**
@@ -71,11 +74,12 @@ final readonly class AiAnswer
             evidenceScore: is_numeric($score) ? max(0.0, min(1.0, (float) $score)) : null,
             reasons: array_values(array_filter(is_array($payload['reasons'] ?? null) ? $payload['reasons'] : [], 'is_string')),
             model: self::stringOrNull($payload['model'] ?? null),
+            conversationId: self::stringOrNull($payload['conversation_id'] ?? null),
         );
     }
 
     /**
-     * Best reranker score as a 0 to 100 integer, or null when the service did not report one.
+     * Best similarity as a 0 to 100 integer, or null when the service did not report one.
      */
     public function confidence(): ?int
     {
@@ -90,7 +94,7 @@ final readonly class AiAnswer
      */
     public function sourcePath(): array
     {
-        $cited = $this->citations[0]['category_path'] ?? null;
+        $cited = $this->citations[0]['hierarchy_path'] ?? null;
 
         if (is_array($cited) && $cited !== []) {
             return self::cleanPath($cited);
@@ -98,8 +102,8 @@ final readonly class AiAnswer
 
         $nearest = $this->related[0] ?? null;
 
-        if ($nearest && (float) ($nearest['reranker_score'] ?? 0) >= self::RELEVANT_SCORE && is_array($nearest['category_path'] ?? null)) {
-            return self::cleanPath($nearest['category_path']);
+        if ($nearest && (float) ($nearest['score'] ?? 0) >= self::RELEVANT_SCORE && is_array($nearest['hierarchy_path'] ?? null)) {
+            return self::cleanPath($nearest['hierarchy_path']);
         }
 
         return [];
