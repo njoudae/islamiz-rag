@@ -26,10 +26,10 @@ Dorar documents
   → evidence sufficiency gate
   → OpenAI GPT grounded generation
   → citation validation
-  → FastAPI → Next.js UI
+  → FastAPI → Laravel (question log, admin) → Vue UI
 ```
 
-مسار السؤال النصي أعلاه حقيقي ومشترك بين الواجهة و`POST /v1/ask`. الصوت ما زال تجريبيًا/mock ولا يدخل في تقييم RAG الحقيقي.
+مسار السؤال النصي أعلاه حقيقي ومشترك بين الواجهة و`POST /v1/ask`. السؤال الصوتي يُفرَّغ إلى نص في متصفح الزائر ثم يسلك المسار نفسه، وليس جزءًا من تقييم RAG.
 
 ## الأدلة القابلة للفحص
 
@@ -49,9 +49,30 @@ Dorar documents
 
 ملف `chunk_embeddings.npy` محلي وغير مخصص لـGit؛ قاعدة PostgreSQL تُعاد تعبئتها من المستندات/المقاطع وتُنشأ التضمينات محليًا.
 
-## التشغيل المحلي
+## التشغيل السريع (Docker)
 
-المتطلبات: Python 3.11+، Node.js 20+، Docker Desktop/Compose، وذاكرة كافية لتشغيل E5 وQwen على CPU. انسخ ملف البيئة ولا تلتزم به في Git:
+المتطلبات: Docker Desktop ومفتاح OpenAI فقط. لا حاجة لتثبيت Python أو Node أو PHP.
+
+```powershell
+Copy-Item .env.example .env     # macOS/Linux: cp .env.example .env
+# عدّل .env وضع قيمة OPENAI_API_KEY
+docker compose up --build
+```
+
+| الخدمة | الرابط |
+|---|---|
+| موقع الزائر | `http://localhost:8080` (صفحة التواصل `/contact`) |
+| لوحة الإدارة | `http://localhost:8080/login` أو زر «دخول المشرفين» |
+
+دخول الإدارة (حساب المشرف): `admin@daleel.sa` / `daleel-admin-2026`، وتعرضه صفحة الدخول مع زر تعبئة. الزائر العادي يستخدم الأداة دون تسجيل دخول. لملء لوحات الإدارة ببيانات تجريبية موسومة اضبط `SEED_DEMO_DATA=true` في `.env` قبل أول تشغيل.
+
+عند أول تشغيل يُبنى الفهرس وتُنزَّل النماذج تلقائيًا (نحو 1.7 جيجابايت)؛ انتظر ظهور `[daleel-ai] starting API` في السجل. التفاصيل في [RUNBOOK.md](RUNBOOK.md).
+
+المكوّنات: الموقع (`apps/site`، Laravel + Inertia + Vue: صفحات الزائر وواجهة API ولوحة الإدارة) ← خدمة الذكاء الاصطناعي (`apps/api`، FastAPI) ← PostgreSQL. المتصفح لا يتصل بخدمة الذكاء الاصطناعي مباشرة، وكل سؤال يُسجَّل مع حالته وتقييم السائل في لوحة الإدارة.
+
+## التشغيل اليدوي لخدمة الذكاء الاصطناعي
+
+هذا المسار لتطوير خدمة الذكاء الاصطناعي وتقييمها فقط، ولا يمر عبر الموقع. المتطلبات: Python 3.11+، Docker Desktop/Compose، وذاكرة كافية لتشغيل E5 وQwen على CPU. انسخ ملف البيئة ولا تلتزم به في Git:
 
 ```powershell
 Copy-Item .env.example .env
@@ -63,7 +84,6 @@ Copy-Item .env.example .env
 POSTGRES_PASSWORD=<local-password>
 DATABASE_URL=postgresql+psycopg://daleel:<local-password>@localhost:5432/daleel
 OPENAI_API_KEY=<your-key>
-NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 ثبّت الاعتماديات مرة واحدة:
@@ -71,7 +91,6 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 ```powershell
 python -m venv apps/api/.venv-real
 apps/api/.venv-real/Scripts/python -m pip install -e ".\apps\api[dev]"
-npm ci
 ```
 
 شغّل كل خدمة في نافذة مستقلة من جذر المستودع:
@@ -79,10 +98,9 @@ npm ci
 ```powershell
 docker compose up -d postgres
 apps/api/.venv-real/Scripts/python -m uvicorn app.main:app --app-dir apps/api --host 127.0.0.1 --port 8000
-npm run dev
 ```
 
-افتح `http://localhost:3000`. فحص API: `http://127.0.0.1:8000/health`. تحميل البيانات وقاعدة المعرفة موثق في [RUNBOOK.md](RUNBOOK.md). لا تطبع مفتاح OpenAI ولا تضع `.env` في Git.
+اطرح الأسئلة من `http://127.0.0.1:8000/docs`. فحص API: `http://127.0.0.1:8000/health`. تحميل البيانات وقاعدة المعرفة موثق في [RUNBOOK.md](RUNBOOK.md). لا تطبع مفتاح OpenAI ولا تضع `.env` في Git.
 
 ## الاختبارات والتقييم
 
@@ -105,10 +123,11 @@ apps/api/.venv-real/Scripts/python rerank_real_rag.py
 
 لعرض النتائج افتح [`artifacts/evaluation/results.csv`](artifacts/evaluation/results.csv)، [`retrieval_metrics.json`](artifacts/evaluation/retrieval_metrics.json)، و[`reranker_metrics.json`](artifacts/evaluation/reranker_metrics.json). توليد GPT الحقيقي يحتاج `OPENAI_API_KEY` وقد يستهلك رصيد API؛ آخر النتائج الحقيقية محفوظة بالفعل في `artifacts/generation/`.
 
-## بناء الواجهة
+## اختبارات الموقع
 
 ```powershell
-npm run build
+docker build --target base -t daleel-site-dev apps/site
+docker run --rm -v "${PWD}/apps/site:/app" daleel-site-dev sh -c "composer install --no-interaction && php artisan test"
 ```
 
 ## القيود الحالية

@@ -47,7 +47,7 @@ Question → Query Understanding → Approved Source → Hybrid Retrieval → Re
 - محول حتمي لصفحات `dorar.net/feqhia` يحفظ النص والهوية والمراجع الصريحة.
 - حالات: `ANSWERABLE`, `NEEDS_CLARIFICATION`, `INSUFFICIENT_EVIDENCE`, `COMPLEX_CASE`, `CONFLICTING_EVIDENCE`, `OUT_OF_SCOPE`.
 - شرط برمجي يمنع إجابة `ANSWERABLE` بلا استشهاد.
-- واجهة Next.js عربية RTL تتصل بـ API لمسار السؤال النصي.
+- موقع مستقل عن خدمة الذكاء الاصطناعي (Laravel + Inertia + Vue، عربي RTL، فاتح وداكن): صفحات الزائر، وسؤال صوتي يُفرّغ في المتصفح، وتقييم الإجابات، وسجل لكل سؤال وحالته، ولوحة إدارة بطابور مراجعة وصندوق لرسائل التواصل.
 - اختبارات سلامة حتمية منفصلة وتقييم RAG حقيقي موثق في `artifacts/`.
 
 ## Provider-Ready / Planned
@@ -67,13 +67,17 @@ Question → Query Understanding → Approved Source → Hybrid Retrieval → Re
 
 ## How to Run
 
-راجع [RUNBOOK.md](RUNBOOK.md). تشغيل المسار الحقيقي يتطلب PostgreSQL وOpenAI وموديلات Hugging Face المحلية.
+المطلوب: Docker ومفتاح OpenAI فقط.
 
 ```powershell
-docker compose up -d postgres
-apps/api/.venv-real/Scripts/python -m uvicorn app.main:app --app-dir apps/api --port 8000
-npm run dev
+Copy-Item .env.example .env     # ثم ضع قيمة OPENAI_API_KEY
+docker compose up --build
 ```
+
+- موقع الزائر: `http://localhost:8080` (بلا تسجيل دخول): الرئيسية، وصفحة السؤال بالنص أو الصوت، وتصفح الموسوعة، وصفحة «تواصل معنا».
+- لوحة الإدارة: زر «دخول المشرفين» أو `http://localhost:8080/login` بحساب المشرف `admin@daleel.sa` / `daleel-admin-2026`. تعرض مؤشرات الأسئلة الفعلية، وطابور مراجعة يحفظ حكم المراجِع، ومصفوفة تصنيف مبنية على المراجعات. البطاقات التي لا تتوفر لها بيانات حقيقية بعد موسومة «بيانات تجريبية».
+
+أول تشغيل يبني الفهرس وينزّل نماذج Hugging Face تلقائيًا. التفاصيل والتشغيل اليدوي في [RUNBOOK.md](RUNBOOK.md).
 
 ## How to Evaluate
 
