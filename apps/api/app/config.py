@@ -16,12 +16,12 @@ class Settings(BaseSettings):
     allowed_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
     crawl_delay_seconds: float = 2.5
     crawl_user_agent: str = "DaleelResearchBot/0.1 (+configure-contact)"
-    stt_provider: str = "mock"
-    tts_provider_ar: str = "mock"
-    tts_provider_en: str = "mock"
-    embedding_provider: str = "mock"
-    reranker_provider: str = "mock"
-    generation_provider: str = "mock"
+    stt_provider: str = "disabled"
+    tts_provider_ar: str = "disabled"
+    tts_provider_en: str = "disabled"
+    embedding_provider: str = "bge_m3"
+    reranker_provider: str = "disabled"
+    generation_provider: str = "openai"
     e5_model: str = "intfloat/multilingual-e5-small"
     qwen_reranker_model: str = "Qwen/Qwen3-Reranker-0.6B"
     openai_generation_model: str = "gpt-6.1-sol"
@@ -29,6 +29,17 @@ class Settings(BaseSettings):
     # Shared secret the website backend sends as X-Internal-Token. Unset = open (local dev).
     internal_api_token: SecretStr | None = None
     default_source_collection: str = "OFFICIAL_HACKATHON_REFERENCE"
+    final_index_dir: str = str(
+        Path(__file__).resolve().parents[3]
+        / "artifacts"
+        / "benchmark"
+        / "final_30q_retrieval"
+        / "production_index"
+    )
+    conversation_db_path: str = str(
+        Path(__file__).resolve().parents[3] / "data" / "conversations.sqlite3"
+    )
+    retrieval_device: str | None = None
 
 
 @lru_cache

@@ -39,7 +39,7 @@ async def build_real_index(
     chunk_path.parent.mkdir(parents=True, exist_ok=True)
     chunk_path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in chunk_rows) + "\n", encoding="utf-8")
 
-    vectors = await embedding_provider.embed_passages([chunk.content for chunk in chunks])
+    vectors = await embedding_provider.embed_passages([chunk.retrieval_text or chunk.content for chunk in chunks])
     _validate_embeddings(chunks, vectors, embedding_provider.dimensions)
     embedding_dir = artifacts_root / "embeddings"
     embedding_dir.mkdir(parents=True, exist_ok=True)
@@ -69,6 +69,10 @@ async def build_real_index(
 def load_cached_index(documents_path: Path, artifacts_root: Path, database_url: str, model_name: str) -> dict[str, int]:
     documents = [FatwaDocument.model_validate_json(line) for line in documents_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     chunks = [chunk for document in documents for chunk in structure_aware_chunks(document)]
+    chunk_rows = [_chunk_artifact(chunk) for chunk in chunks]
+    chunk_path = artifacts_root / "chunks" / "chunks.jsonl"
+    chunk_path.parent.mkdir(parents=True, exist_ok=True)
+    chunk_path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in chunk_rows) + "\n", encoding="utf-8")
     matrix = np.load(artifacts_root / "embeddings" / "chunk_embeddings.npy")
     vectors = matrix.astype(np.float32).tolist()
     _validate_embeddings(chunks, vectors, int(matrix.shape[1]))
@@ -82,12 +86,23 @@ def _chunk_artifact(chunk: FatwaChunk) -> dict[str, object]:
         "chunk_id": chunk_id,
         "document_id": chunk.fatwa_id,
         "chunk_index": chunk.chunk_index,
-        "text": chunk.content,
+        "text": chunk.original_text or chunk.content,
         "title": chunk.title,
+        "topic": chunk.topic,
+        "tags": chunk.tags,
+        "hierarchy": chunk.hierarchy,
+        "section_type": chunk.section_type,
+        "ruling": chunk.ruling,
+        "evidence": chunk.evidence,
+        "evidence_types": chunk.evidence_types,
+        "wajh_al_dalala": chunk.wajh_al_dalala,
+        "qa_pairs": [pair.model_dump(mode="json") for pair in chunk.qa_pairs],
+        "original_text": chunk.original_text or chunk.content,
+        "retrieval_text": chunk.retrieval_text or chunk.content,
         "source": chunk.source_collection.value,
         "canonical_reference": chunk.source_url,
         "category": chunk.category_path,
-        "content_hash": hashlib.sha256(chunk.content.encode("utf-8")).hexdigest(),
+        "content_hash": hashlib.sha256((chunk.original_text or chunk.content).encode("utf-8")).hexdigest(),
     }
 
 
@@ -112,6 +127,23 @@ def _load_database(
     model_name: str,
 ) -> None:
     with psycopg.connect(psycopg_url(database_url)) as connection, connection.cursor() as cursor:
+        cursor.execute(
+            """
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS topic text;
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS tags jsonb NOT NULL DEFAULT '[]';
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS hierarchy jsonb NOT NULL DEFAULT '{}';
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS section_type text NOT NULL DEFAULT 'issue';
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS ruling text;
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS evidence jsonb NOT NULL DEFAULT '[]';
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS evidence_types jsonb NOT NULL DEFAULT '[]';
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS wajh_al_dalala jsonb NOT NULL DEFAULT '[]';
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS qa_pairs jsonb NOT NULL DEFAULT '[]';
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS original_text text;
+            ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS retrieval_text text;
+            CREATE INDEX IF NOT EXISTS fatwa_chunks_retrieval_fts_idx
+              ON fatwa_chunks USING gin (to_tsvector('simple', retrieval_text));
+            """
+        )
         cursor.execute("TRUNCATE embeddings, fatwa_chunks, fatwa_category_links, fatwas CASCADE")
         for document in documents:
             document_id = stable_uuid("document", f"{document.source_collection.value}:{document.external_id}")
@@ -150,12 +182,19 @@ def _load_database(
             cursor.execute(
                 """
                 INSERT INTO fatwa_chunks (id, fatwa_id, chunk_index, content, title, category_path, source_url,
-                  source_collection, source_author, source_authority, token_count)
-                VALUES (%s, %s, %s, %s, %s, %s::jsonb, %s, %s, %s, %s, %s)
+                  source_collection, source_author, source_authority, token_count, topic, tags, hierarchy,
+                  section_type, ruling, evidence, evidence_types, wajh_al_dalala, qa_pairs, original_text, retrieval_text)
+                VALUES (%s, %s, %s, %s, %s, %s::jsonb, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb,
+                  %s, %s, %s::jsonb, %s::jsonb, %s::jsonb, %s::jsonb, %s, %s)
                 """,
-                (chunk_id, document_id, chunk.chunk_index, chunk.content, chunk.title,
+                (chunk_id, document_id, chunk.chunk_index, chunk.original_text or chunk.content, chunk.title,
                  json.dumps(chunk.category_path, ensure_ascii=False), chunk.source_url, chunk.source_collection.value,
-                 chunk.source_author, chunk.source_authority, len(chunk.content.split())),
+                 chunk.source_author, chunk.source_authority, len((chunk.retrieval_text or chunk.content).split()),
+                 chunk.topic, json.dumps(chunk.tags, ensure_ascii=False), json.dumps(chunk.hierarchy, ensure_ascii=False),
+                 chunk.section_type, chunk.ruling, json.dumps(chunk.evidence, ensure_ascii=False),
+                 json.dumps(chunk.evidence_types, ensure_ascii=False), json.dumps(chunk.wajh_al_dalala, ensure_ascii=False),
+                 json.dumps([pair.model_dump(mode="json") for pair in chunk.qa_pairs], ensure_ascii=False),
+                 chunk.original_text or chunk.content, chunk.retrieval_text or chunk.content),
             )
             cursor.execute(
                 "INSERT INTO embeddings (chunk_id, provider, model, dimensions, embedding) VALUES (%s, %s, %s, %s, %s::vector)",

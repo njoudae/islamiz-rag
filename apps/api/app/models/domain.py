@@ -1,6 +1,13 @@
 from datetime import datetime, timezone
-from enum import StrEnum
+try:
+    from enum import StrEnum
+except ImportError:  # Python 3.10 compatibility for the CUDA environment
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        pass
 from typing import Any, Literal
+from uuid import UUID
 from pydantic import BaseModel, Field, HttpUrl, model_validator
 
 
@@ -95,6 +102,17 @@ class FatwaChunk(BaseModel):
     category_path: list[str]
     source_url: str
     chunk_index: int
+    topic: str | None = None
+    tags: list[str] = Field(default_factory=list)
+    hierarchy: dict[str, Any] = Field(default_factory=dict)
+    section_type: str = "issue"
+    ruling: str | None = None
+    evidence: list[str] = Field(default_factory=list)
+    evidence_types: list[str] = Field(default_factory=list)
+    wajh_al_dalala: list[str] = Field(default_factory=list)
+    qa_pairs: list[QuestionAnswerPair] = Field(default_factory=list)
+    original_text: str | None = None
+    retrieval_text: str | None = None
     source_collection: SourceCollection = SourceCollection.OFFICIAL_HACKATHON_REFERENCE
     source_author: str | None = None
     source_authority: str | None = "مؤسسة الدرر السنية"
@@ -142,6 +160,7 @@ class RetrievedEvidence(BaseModel):
     dense_rank: int | None = None
     lexical_score: float | None = None
     lexical_rank: int | None = None
+    metadata_score: float | None = None
     fused_score: float | None = None
     fused_rank: int | None = None
 
@@ -151,6 +170,7 @@ class GroundedGeneration(BaseModel):
     summary: str | None = None
     explanation: str | None = None
     citation_chunk_ids: list[str] = Field(default_factory=list)
+    citation_urls: list[str] = Field(default_factory=list)
     clarification_question: str | None = None
     escalation_reason: str | None = None
 
@@ -173,8 +193,10 @@ class Citation(BaseModel):
     madhhabs: list[str] = Field(default_factory=list)
     original_reference: list[SourceReference] = Field(default_factory=list)
     source_type: str = "fiqh_encyclopedia_entry"
-    # Where the passage sits in the encyclopedia: book, then its nested sections.
-    category_path: list[str] = Field(default_factory=list)
+    hierarchy_path: list[str] = Field(default_factory=list)
+    attributions: list[dict[str, Any]] = Field(default_factory=list)
+    consensus: list[dict[str, Any]] = Field(default_factory=list)
+    evidence: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class RelatedSource(BaseModel):
@@ -183,8 +205,10 @@ class RelatedSource(BaseModel):
     fatwa_id: int
     title: str
     source_url: str
-    category_path: list[str] = Field(default_factory=list)
-    reranker_score: float = Field(ge=0, le=1)
+    # Root to leaf, the same order as Citation.hierarchy_path.
+    hierarchy_path: list[str] = Field(default_factory=list)
+    # Similarity between the question and this passage, 0 to 1.
+    score: float = Field(ge=0, le=1)
 
 
 class AnswerResponse(BaseModel):
@@ -195,6 +219,8 @@ class AnswerResponse(BaseModel):
     clarification_question: str | None = None
     escalation_message: str | None = None
     citations: list[Citation] = Field(default_factory=list)
+    conversation_id: UUID | None = None
+    runtime_context: dict[str, Any] = Field(default_factory=dict, exclude=True, repr=False)
     # Diagnostics for the website's admin area. None of these change the answer itself.
     related: list[RelatedSource] = Field(default_factory=list)
     evidence_score: float | None = Field(default=None, ge=0, le=1)
@@ -213,6 +239,9 @@ class AskRequest(BaseModel):
     language: str | None = None
     answer_mode: Literal["text", "voice", "both"] = "text"
     source_collection: SourceCollection = SourceCollection.OFFICIAL_HACKATHON_REFERENCE
+    madhhab: str | None = Field(default=None, max_length=80)
+    gender: Literal["male", "female"] | None = None
+    conversation_id: UUID | None = None
 
 
 class AuthorityContact(BaseModel):

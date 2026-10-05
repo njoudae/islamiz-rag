@@ -4,7 +4,7 @@ from app.models.domain import AuthorityContact, RetrievedEvidence, SourceCollect
 
 class FatwaRepository(ABC):
     @abstractmethod
-    async def hybrid_search(self, query: str, language: str, category: str | None = None, limit: int = 20, source_collection: SourceCollection = SourceCollection.OFFICIAL_HACKATHON_REFERENCE) -> list[RetrievedEvidence]: ...
+    async def hybrid_search(self, query: str, language: str, category: str | None = None, limit: int = 10, source_collection: SourceCollection = SourceCollection.OFFICIAL_HACKATHON_REFERENCE) -> list[RetrievedEvidence]: ...
 
 
 class ContactRepository(ABC):
@@ -13,7 +13,7 @@ class ContactRepository(ABC):
 
 
 class DemoFatwaRepository(FatwaRepository):
-    async def hybrid_search(self, query: str, language: str, category: str | None = None, limit: int = 20, source_collection: SourceCollection = SourceCollection.OFFICIAL_HACKATHON_REFERENCE) -> list[RetrievedEvidence]:
+    async def hybrid_search(self, query: str, language: str, category: str | None = None, limit: int = 10, source_collection: SourceCollection = SourceCollection.OFFICIAL_HACKATHON_REFERENCE) -> list[RetrievedEvidence]:
         if source_collection != SourceCollection.OFFICIAL_HACKATHON_REFERENCE:
             return []
         normalized = query.casefold()

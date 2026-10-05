@@ -23,12 +23,17 @@ class EvidenceSufficiencyEvaluator:
             if (
                 item.coverage >= 0.30
                 and (item.dense_score or 0.0) >= 0.80
-                and item.reranker_score >= 0.05
+                and item.fused_rank is not None
+                and item.fused_rank <= 3
             ) or (
                 item.fused_rank == 1
                 and item.coverage >= 0.20
-                and (item.dense_score or 0.0) >= 0.85
-                and item.reranker_score >= 0.04
+                and ((item.dense_score or 0.0) >= 0.85 or (item.lexical_score or 0.0) > 0.0)
+            ) or (
+                item.fused_rank is None
+                and item.coverage >= 0.30
+                and (item.dense_score or item.retrieval_score) >= 0.80
+                and item.reranker_score >= 0.05
             )
         ]
         if not direct:
@@ -37,7 +42,7 @@ class EvidenceSufficiencyEvaluator:
         top = direct[:3]
         if any(item.conflicting_positions for item in top):
             return EvidenceDecision(state=EvidenceState.CONFLICTING_EVIDENCE, reasons=["the approved source presents materially different positions"])
-        return EvidenceDecision(state=EvidenceState.ANSWERABLE, reasons=["direct source coverage", "strong reranker score", "source agreement"])
+        return EvidenceDecision(state=EvidenceState.ANSWERABLE, reasons=["direct source coverage", "strong hybrid rank", "source agreement"])
 
     @staticmethod
     def _grounded_clarification(analysis: QueryAnalysis, evidence: list[RetrievedEvidence]) -> str:

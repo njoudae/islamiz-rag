@@ -1,0 +1,1 @@
+{"stage":"frontend_optional_tests","critical":false,"status":"not_run_no_test_files","detail":"vitest exited 1 because the existing frontend contains no test files; Next.js production build and TypeScript compilation passed."}

@@ -1,0 +1,30 @@
+{"id":"salah-01","book":"salah","question":"ما حكم تكبيرة الإحرام في الصلاة؟","gold_unit_id":"nav-00506","gold_title":"حكم تكبيرة الإحرام","style":"formal","case":"ruling"}
+{"id":"salah-02","book":"salah","question":"إذا نسيت ركنًا مثل الركوع، هل يكفيني سجود السهو؟","gold_unit_id":"nav-00658","gold_title":"حكم سجود السهو لمن ترك ركنا","style":"formal","case":"near_neighbor"}
+{"id":"salah-03","book":"salah","question":"وش حكم سجود السهو بشكل عام؟","gold_unit_id":"nav-00643","gold_title":"حكم سجود السهو","style":"saudi_colloquial","case":"ruling"}
+{"id":"salah-04","book":"salah","question":"أنا مسافر وبجلس أربعة أيام، أقصر الصلاة ولا لا؟","gold_unit_id":"nav-00828","gold_title":"عدم نية الإقامة في السفر","style":"gulf_colloquial","case":"hierarchy_sensitive"}
+{"id":"salah-05","book":"salah","question":"دخل وقت الصلاة قبل أن أسافر ثم سافرت، هل يجوز أن أصليها قصرًا؟","gold_unit_id":"nav-00831","gold_title":"دخول وقت الصلاة وهو في السفر","style":"formal","case":"near_neighbor"}
+{"id":"salah-06","book":"salah","question":"فاتتني صلاة وأنا في البلد وبقضيها وأنا مسافر؛ أصليها تامة أو مقصورة؟","gold_unit_id":"nav-00835","gold_title":"قضاء صلاة الحضر في السفر","style":"saudi_colloquial","case":"near_neighbor"}
+{"id":"salah-07","book":"salah","question":"صلاة فاتتني بالسفر وبقضيها بعد ما رجعت للحضر، كيف أقضيها؟","gold_unit_id":"nav-00836","gold_title":"قضاء صلاة السفر في الحضر","style":"gulf_colloquial","case":"near_neighbor"}
+{"id":"salah-08","book":"salah","question":"هل يجوز للمرضع جمع الصلوات إذا شق عليها غسل الثياب لكل فرض؟","gold_unit_id":"nav-00855","gold_title":"حكم الجمع للمرضع","style":"formal","case":"hierarchy_sensitive"}
+{"id":"salah-09","book":"salah","question":"هل يجوز الجمع بين الصلاتين في الحضر بسبب الحرج والمشقة؟","gold_unit_id":"nav-00856","gold_title":"الجمع لدفع الحرج والمشقة","style":"formal","case":"ruling"}
+{"id":"salah-10","book":"salah","question":"وين توقف المرأة إذا كانت وحدها تصلي مع جماعة الرجال؟","gold_unit_id":"nav-00797","gold_title":"موقف المرأة الواحدة في صلاة الجماعة","style":"saudi_colloquial","case":"hierarchy_sensitive"}
+{"id":"salah-11","book":"salah","question":"ما حكم صلاة الوتر؟","gold_unit_id":"nav-00707","gold_title":"حكم صلاة الوتر","style":"formal","case":"ruling"}
+{"id":"salah-12","book":"salah","question":"أكلت ثوم وريحته باقية، أروح أصلي مع الجماعة في المسجد؟","gold_unit_id":"nav-00773","gold_title":"صلاة الجماعة لمن أكل ثوما، أو بصلا ونحوهما","style":"saudi_colloquial","case":"paraphrase"}
+{"id":"salah-13","book":"salah","question":"هل صلاة الجمعة فرض عين؟","gold_unit_id":"nav-00895","gold_title":"حكم صلاة الجمعة","style":"formal","case":"ruling"}
+{"id":"salah-14","book":"salah","question":"على من تجب صلاة الجمعة؟","gold_unit_id":"nav-00899","gold_title":"من تجب عليهم صلاة الجمعة","style":"formal","case":"hierarchy_sensitive"}
+{"id":"salah-15","book":"salah","question":"كيف يُجمع بين الظهر والعصر بعرفة وبين المغرب والعشاء بمزدلفة؟","gold_unit_id":"nav-00849","gold_title":"الجمع بعرفة ومزدلفة","style":"formal","case":"near_neighbor"}
+{"id":"sawm-01","book":"sawm","question":"هل يلزم تجديد نية صيام رمضان كل ليلة أم تكفي نية واحدة؟","gold_unit_id":"nav-01498","gold_title":"النية في الصوم","style":"formal","case":"ruling"}
+{"id":"sawm-02","book":"sawm","question":"المريض اللي متوقع يشفى وفطر برمضان، وش يلزمه بعدين؟","gold_unit_id":"nav-01520","gold_title":"ما يلزم المريض الذي يرجى برؤه","style":"saudi_colloquial","case":"near_neighbor"}
+{"id":"sawm-03","book":"sawm","question":"من كان مرضه مزمنًا لا يرجى شفاؤه، ماذا يلزمه إذا أفطر؟","gold_unit_id":"nav-01521","gold_title":"ما يلزم المريض مرضا لا يرجى برؤه","style":"formal","case":"near_neighbor"}
+{"id":"sawm-04","book":"sawm","question":"أنا مسافر، يجوز لي أفطر في رمضان؟","gold_unit_id":"nav-01524","gold_title":"حكم فطر المسافر","style":"gulf_colloquial","case":"ruling"}
+{"id":"sawm-05","book":"sawm","question":"للمسافر القادر بلا مشقة: الأفضل يصوم أو يفطر؟","gold_unit_id":"nav-01525","gold_title":"حكم صوم المسافر","style":"formal","case":"near_neighbor"}
+{"id":"sawm-06","book":"sawm","question":"سواق الشاحنة سفره شبه دائم، يقدر يفطر؟","gold_unit_id":"nav-01526","gold_title":"حكم صوم من سفره شبه دائم","style":"saudi_colloquial","case":"hierarchy_sensitive"}
+{"id":"sawm-07","book":"sawm","question":"ما حكم فطر الشيخ الكبير والمرأة العجوز إذا كانا لا يطيقان الصوم؟","gold_unit_id":"nav-01529","gold_title":"حكم صوم الرجل الكبير والمرأة العجوز","style":"formal","case":"ruling"}
+{"id":"sawm-08","book":"sawm","question":"إذا أفطر الكبير لعجزه عن الصيام، وش عليه عن كل يوم؟","gold_unit_id":"nav-01530","gold_title":"ما يلزم الكبير والعجوز إذا أفطرا","style":"gulf_colloquial","case":"near_neighbor"}
+{"id":"sawm-09","book":"sawm","question":"هل يجوز للحامل والمرضع الفطر خوفًا على نفسيهما أو ولديهما؟","gold_unit_id":"nav-01532","gold_title":"حكم صوم الحامل والمرضع","style":"formal","case":"ruling"}
+{"id":"sawm-10","book":"sawm","question":"العطش والجوع وصلاني لدرجة أخاف على نفسي، لازم أفطر؟","gold_unit_id":"nav-01536","gold_title":"إرهاق الجوع والعطش","style":"saudi_colloquial","case":"paraphrase"}
+{"id":"sawm-11","book":"sawm","question":"هل الحجامة تفسد صوم الصائم؟","gold_unit_id":"nav-01550","gold_title":"حكم الحجامة والفصد للصائم","style":"formal","case":"ruling"}
+{"id":"sawm-12","book":"sawm","question":"بخاخ الربو في نهار رمضان يفطر أو لا؟","gold_unit_id":"nav-01556","gold_title":"بخاخ الربو","style":"gulf_colloquial","case":"ruling"}
+{"id":"sawm-13","book":"sawm","question":"ما حكم صيام يوم عرفة للحاج؟","gold_unit_id":"nav-01574","gold_title":"صوم يوم عرفة للحاج","style":"formal","case":"near_neighbor"}
+{"id":"sawm-14","book":"sawm","question":"هل لازم أقضي أيام رمضان متتابعة؟","gold_unit_id":"nav-01585","gold_title":"التتابع في القضاء","style":"saudi_colloquial","case":"near_neighbor"}
+{"id":"sawm-15","book":"sawm","question":"من أخّر قضاء رمضان إلى رمضان التالي بلا عذر، ماذا يلزمه؟","gold_unit_id":"nav-01586","gold_title":"التراخي في القضاء","style":"formal","case":"near_neighbor"}
