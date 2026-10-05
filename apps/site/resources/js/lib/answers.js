@@ -23,15 +23,7 @@ export function fromApi(p) {
             topic: first?.title || '',
             answer: p.summary || '',
             explanation: p.explanation || '',
-            // The cited passage from the encyclopedia, with its own references when it has them.
-            evidence: citations
-                .filter((c) => c.excerpt)
-                .slice(0, 2)
-                .map((c) => ({
-                    text: c.excerpt.length > 420 ? c.excerpt.slice(0, 420).trim() + '…' : c.excerpt,
-                    ref: (c.original_reference || []).map((r) => r.raw).filter(Boolean).join('، ') || c.source_collection_name || '',
-                    quoted: false,
-                })),
+            evidence: evidenceOf(citations),
             sources: citations.map((c) => ({ book: c.title, href: c.source_url })),
         };
     }
@@ -41,6 +33,31 @@ export function fromApi(p) {
     }
 
     return { ...base, answer: p.escalation_message || '' };
+}
+
+const EVIDENCE_KIND = { quran: 'من القرآن الكريم', sunnah: 'من السنة النبوية', ijma: 'من الإجماع' };
+const clip = (text, max) => (text.length > max ? text.slice(0, max).trim() + '…' : text);
+
+/**
+ * The evidence the answer relied on, as the encyclopedia words it. When the cited entries
+ * carry no separate evidence, their own ruling text is shown instead.
+ */
+function evidenceOf(citations) {
+    const items = citations.flatMap((c) =>
+        (Array.isArray(c.evidence) ? c.evidence : [])
+            .filter((e) => e?.text_original)
+            .map((e) => ({ text: clip(e.text_original, 600), ref: EVIDENCE_KIND[e.type] || c.title || '', quoted: false })),
+    );
+    if (items.length) return items.slice(0, 4);
+
+    return citations
+        .filter((c) => c.excerpt)
+        .slice(0, 2)
+        .map((c) => ({
+            text: clip(c.excerpt, 420),
+            ref: (c.original_reference || []).map((r) => r.raw).filter(Boolean).join('، ') || c.source_collection_name || '',
+            quoted: false,
+        }));
 }
 
 /** The design's prepared answer for a preset key. */
