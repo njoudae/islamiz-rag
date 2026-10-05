@@ -19,6 +19,10 @@ assets
 evaluation
 scripts
 
-# Only the normalized corpus is needed to build the index; everything else is evidence output.
+# Only the production index is needed at run time; everything else is evidence output.
 artifacts/*
-!artifacts/corpus
+!artifacts/benchmark
+artifacts/benchmark/*
+!artifacts/benchmark/final_30q_retrieval
+artifacts/benchmark/final_30q_retrieval/*
+!artifacts/benchmark/final_30q_retrieval/production_index

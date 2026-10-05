@@ -6,7 +6,8 @@
 #   Visitor site   http://localhost:8080
 #   Admin area     http://localhost:8080/login
 #
-# Request path:  browser -> site (Laravel + Vue) -> ai (FastAPI) -> postgres
+# Request path:  browser -> site (Laravel + Vue) -> ai (FastAPI)
+# The site keeps its own data in postgres; the AI service answers from a file index.
 # The browser never talks to the AI service directly.
 
 services:
@@ -28,29 +29,26 @@ services:
       - daleel_pg:/var/lib/postgresql/data
       - ./infra/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
 
-  # RAG pipeline: retrieval, reranking, evidence gate, generation.
-  # On first start it builds the index and downloads the models (about 1.7 GB).
+  # RAG pipeline: retrieval, grounded source selection, generation.
+  # On first start it downloads the embedding model (about 2.3 GB).
   ai:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
     restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
       APP_ENV: ${APP_ENV:-development}
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-daleel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-daleel}
       OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY in your local .env file}
       OPENAI_GENERATION_MODEL: ${OPENAI_GENERATION_MODEL:-gpt-6.1-sol}
-      E5_MODEL: ${E5_MODEL:-intfloat/multilingual-e5-small}
-      QWEN_RERANKER_MODEL: ${QWEN_RERANKER_MODEL:-Qwen/Qwen3-Reranker-0.6B}
+      CONVERSATION_DB_PATH: /srv/daleel/data/conversations.sqlite3
+      RETRIEVAL_DEVICE: ${RETRIEVAL_DEVICE:-cpu}
       INTERNAL_API_TOKEN: ${AI_SERVICE_TOKEN:-local-internal-token}
     ports:
       # Loopback only: for /health and /docs during development, not for browsers.
       - "127.0.0.1:${AI_PORT:-8000}:8000"
     volumes:
       - daleel_models:/models
+      - daleel_conversations:/srv/daleel/data
 
   # The website: visitor pages, public API, question log and admin area.
   site:
@@ -90,4 +88,5 @@ services:
 volumes:
   daleel_pg:
   daleel_models:
+  daleel_conversations:
   daleel_site:

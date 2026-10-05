@@ -1,4 +1,4 @@
-# Daleel AI service (FastAPI + E5 + Qwen reranker). Build context: repository root.
+# Daleel AI service (FastAPI + BGE-M3 retrieval). Build context: repository root.
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
@@ -19,14 +19,14 @@ COPY apps/api/pyproject.toml apps/api/pyproject.toml
 RUN mkdir -p apps/api/app && touch apps/api/app/__init__.py \
     && pip install -e ./apps/api
 
-COPY infra/schema.sql infra/schema.sql
-COPY artifacts/corpus artifacts/corpus
+COPY artifacts/benchmark/final_30q_retrieval/production_index artifacts/benchmark/final_30q_retrieval/production_index
+COPY prompts prompts
 COPY apps/api/app apps/api/app
 COPY apps/api/docker apps/api/docker
 
 RUN useradd --create-home --uid 10001 daleel \
-    && mkdir -p /models artifacts \
-    && chown -R daleel:daleel /models artifacts
+    && mkdir -p /models data \
+    && chown -R daleel:daleel /models data
 USER daleel
 
 EXPOSE 8000
