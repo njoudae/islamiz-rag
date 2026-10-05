@@ -1,10 +1,11 @@
+import asyncio
 import secrets
 from pathlib import Path
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, HTTPException, Response, Security, UploadFile, status
 from fastapi.security import APIKeyHeader
-from app.models.domain import AnswerResponse, AskRequest, AuthorityContact
+from app.models.domain import AnswerResponse, AskRequest, AuthorityContact, EvidenceState
 from app.config import get_settings
 from app.providers.base import MockSpeechToTextProvider, MockTextToSpeechProvider
 from app.repositories.base import EmptyContactRepository
@@ -45,6 +46,26 @@ answer_service = FinalRagService(
     settings.retrieval_device,
     query_embedder,
 )
+# The scope check the earlier pipeline ran: a question that is not a fiqh question is
+# reported as OUT_OF_SCOPE rather than as a fiqh question with too little evidence.
+scope_classifier = None
+if openai_api_key:
+    from app.providers.real import OpenAIRoutingEvidenceProvider
+
+    scope_classifier = OpenAIRoutingEvidenceProvider(openai_api_key, settings.openai_generation_model)
+OUT_OF_SCOPE_MESSAGE = "هذا ليس من اختصاصي، أنا أجيب فقط عن المسائل الفقهية."
+
+
+async def is_out_of_scope(query: str, language: str | None) -> bool:
+    if scope_classifier is None:
+        return False
+    try:
+        return await scope_classifier.classify_scope(query, language) == "NON_FIQH"
+    except Exception:
+        # The answer path reports provider failures itself; the scope check must not add one.
+        return False
+
+
 speech_service = None
 if (
     settings.app_env != "production"
@@ -101,7 +122,25 @@ async def ask(payload: AskRequest) -> AnswerResponse:
         payload.query,
         "clarification_reply" if awaiting else "question",
     )
-    response = await answer_service.answer(effective_payload)
+    # Runs alongside retrieval and selection, so it adds no waiting time.
+    scope_task = asyncio.create_task(is_out_of_scope(effective_payload.query, payload.language))
+    try:
+        response = await answer_service.answer(effective_payload)
+    except BaseException:
+        scope_task.cancel()
+        raise
+    # A grounded answer or a source-based clarification always stands; only a refusal is relabelled.
+    if await scope_task and response.state not in (EvidenceState.ANSWERABLE, EvidenceState.NEEDS_CLARIFICATION):
+        response = AnswerResponse(
+            state=EvidenceState.OUT_OF_SCOPE,
+            language=response.language,
+            escalation_message=OUT_OF_SCOPE_MESSAGE,
+            runtime_context=response.runtime_context,
+            related=response.related,
+            evidence_score=response.evidence_score,
+            reasons=["scope: not a fiqh question", *response.reasons],
+            model=response.model,
+        )
     response = response.model_copy(update={"conversation_id": conversation_id})
     if response.state.value == "NEEDS_CLARIFICATION":
         clarification = response.clarification_question or ""
