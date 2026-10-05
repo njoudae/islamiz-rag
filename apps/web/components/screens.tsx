@@ -15,23 +15,25 @@ type AnswerPayload = {
   summary?: string | null;
   clarification_question?: string | null;
   escalation_message?: string | null;
-  citations: Array<{ fatwa_id: number; title: string; source_url: string; excerpt?: string | null; source_collection_name?: string; source_authority?: string | null; scholar?: string | null; madhhabs?: string[]; original_reference?: Array<{ raw: string; book?: string | null; volume?: string | null; page?: string | null }>; source_type?: string }>;
+  conversation_id?: string | null;
+  citations: Array<{ fatwa_id: number; title: string; source_url: string; excerpt?: string | null; source_collection_name?: string; source_authority?: string | null; scholar?: string | null; madhhabs?: string[]; original_reference?: Array<{ raw: string; book?: string | null; volume?: string | null; page?: string | null }>; source_type?: string; hierarchy_path?: string[]; evidence?: Array<{ evidence_id?: string; type?: string; text_original?: string; wajh_al_dalala_original?: string | null }> }>;
 };
 
 const answerRequests = new Map<string, Promise<AnswerPayload>>();
 
-function requestAnswer(question: string) {
-  let request = answerRequests.get(question);
+function requestAnswer(question: string, conversationId?: string | null) {
+  const requestKey = `${conversationId ?? "new"}:${question}`;
+  let request = answerRequests.get(requestKey);
   if (!request) {
     request = fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/v1/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: question, answer_mode: "text" }),
+      body: JSON.stringify({ query: question, answer_mode: "text", conversation_id: conversationId ?? null }),
     }).then((response) => {
       if (!response.ok) throw new Error(`API request failed: ${response.status}`);
       return response.json() as Promise<AnswerPayload>;
     });
-    answerRequests.set(question, request);
+    answerRequests.set(requestKey, request);
   }
   return request;
 }
@@ -39,7 +41,7 @@ function requestAnswer(question: string) {
 export function ScreenRouter({ slug }: { slug: string[] }) {
   const screen = slug[0] ?? "";
   if (screen === "onboarding") return <AppShell bare><Onboarding /></AppShell>;
-  return <AppShell>{screen === "" ? <Home /> : screen === "voice" ? <Voice /> : screen === "ask" ? <TextQuestion /> : screen === "answer" ? <Suspense fallback={<PageLoader />}><Answer /></Suspense> : screen === "browse" ? <Browse /> : screen === "categories" ? <Category /> : screen === "fatwas" ? <FatwaDetail /> : screen === "search" ? <SearchScreen /> : screen === "history" ? <History /> : screen === "saved" ? <Saved /> : screen === "source" ? <SourceAbout /> : screen === "escalation" ? <Escalation /> : <Settings />}</AppShell>;
+  return <AppShell>{screen === "" ? <Home /> : screen === "voice" ? <Voice /> : screen === "ask" ? <Suspense fallback={<PageLoader />}><TextQuestion /></Suspense> : screen === "answer" ? <Suspense fallback={<PageLoader />}><Answer /></Suspense> : screen === "browse" ? <Browse /> : screen === "categories" ? <Category /> : screen === "fatwas" ? <FatwaDetail /> : screen === "search" ? <SearchScreen /> : screen === "history" ? <History /> : screen === "saved" ? <Saved /> : screen === "source" ? <SourceAbout /> : screen === "escalation" ? <Escalation /> : <Settings />}</AppShell>;
 }
 
 function Header({ title, subtitle, back = false }: { title: string; subtitle?: string; back?: boolean }) {
@@ -81,14 +83,21 @@ function Voice() {
 }
 
 function TextQuestion() {
+  const params = useSearchParams();
+  const conversationId = params.get("cid");
+  const clarification = params.get("clarification");
   const [question, setQuestion] = useState("");
-  const href = question.trim() ? `/answer?q=${encodeURIComponent(question.trim())}` : "/ask";
-  return <div className="narrow-page"><Header title="اكتب سؤالك" subtitle="أضف التفاصيل التي قد تؤثر في المسألة" back /><div className="question-card"><textarea autoFocus value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="مثال: أنا مسافر وسأقيم أربعة أيام…" /><div className="question-tips"><strong>لإجابة أدق</strong><span>اذكر المدة أو التوقيت أو الظروف المهمة إن وُجدت.</span></div><Link href={href} aria-disabled={!question.trim()} className="primary-button">البحث في المرجع المعتمد <ArrowLeft size={19} /></Link></div></div>;
+  const query = question.trim();
+  const href = query
+    ? `/answer?q=${encodeURIComponent(query)}${conversationId ? `&cid=${encodeURIComponent(conversationId)}` : ""}`
+    : "/ask";
+  return <div className="narrow-page"><Header title={clarification ? "أكمل التفصيل المطلوب" : "اكتب سؤالك"} subtitle={clarification || "أضف التفاصيل التي قد تؤثر في المسألة"} back /><div className="question-card"><textarea autoFocus value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={clarification ? "اكتب إجابتك المختصرة…" : "مثال: أنا مسافر وسأقيم أربعة أيام…"} /><div className="question-tips"><strong>{clarification ? "متابعة نفس السؤال" : "لإجابة أدق"}</strong><span>{clarification ? "سيجمع الخادم هذا الرد مع سؤالك الأصلي، ولن يعامله كسؤال مستقل." : "اذكر المدة أو التوقيت أو الظروف المهمة إن وُجدت."}</span></div><Link href={href} aria-disabled={!query} className="primary-button">البحث في المرجع المعتمد <ArrowLeft size={19} /></Link></div></div>;
 }
 
 function Answer() {
   const params = useSearchParams();
   const question = params.get("q") || demoEntry.question;
+  const conversationId = params.get("cid");
   const [playing, setPlaying] = useState(false);
   const [answer, setAnswer] = useState<AnswerPayload | null>(null);
   const [error, setError] = useState(false);
@@ -97,13 +106,16 @@ function Answer() {
     let active = true;
     setAnswer(null);
     setError(false);
-    requestAnswer(question).then((payload) => { if (active) setAnswer(payload); }).catch(() => { if (active) setError(true); });
+    requestAnswer(question, conversationId).then((payload) => { if (active) setAnswer(payload); }).catch(() => { if (active) setError(true); });
     return () => { active = false; };
-  }, [question]);
+  }, [question, conversationId]);
 
   if (error) return <div className="narrow-page"><Header title="تعذر الاتصال" back /><section className="escalation-card"><h1>تعذر الوصول إلى خدمة الإجابة</h1><p>تحقق من تشغيل الخادم المحلي ثم أعد المحاولة.</p></section></div>;
   if (!answer) return <PageLoader />;
-  if (answer.state === "NEEDS_CLARIFICATION") return <div className="narrow-page"><Header title="نحتاج تفصيلًا واحدًا" back /><section className="escalation-card"><h1>{answer.clarification_question}</h1><p>هذا التفصيل ورد مؤثرًا في المصادر المسترجعة، ولن نخمن الإجابة بدونه.</p><Link href="/ask" className="primary-button">إضافة التفاصيل</Link></section></div>;
+  if (answer.state === "NEEDS_CLARIFICATION") {
+    const followUpHref = `/ask?cid=${encodeURIComponent(answer.conversation_id || "")}&clarification=${encodeURIComponent(answer.clarification_question || "")}`;
+    return <div className="narrow-page"><Header title="نحتاج تفصيلًا واحدًا" back /><section className="escalation-card"><h1>{answer.clarification_question}</h1><p>هذا التفصيل ورد مؤثرًا في المصادر المسترجعة، ولن نخمن الإجابة بدونه.</p><Link href={followUpHref} className="primary-button">إضافة التفاصيل</Link></section></div>;
+  }
   if (answer.state !== "ANSWERABLE") return <div className="narrow-page"><Header title="التواصل مع مختص" back /><section className="escalation-card"><span className="escalation-card__icon"><ShieldAlert size={29} /></span><h1>هذه المسألة تحتاج نظرًا من مختص</h1><p>{answer.escalation_message}</p><Link href="/escalation" className="primary-button">عرض خيارات التواصل</Link></section></div>;
   const source = answer.citations[0];
   return <div className="answer-layout">

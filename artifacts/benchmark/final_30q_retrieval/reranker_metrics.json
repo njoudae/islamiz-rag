@@ -1,0 +1,73 @@
+{
+  "winning_embedding_model": "bge_m3",
+  "winning_representation": "D2",
+  "candidate_coverage_r@10_before_reranking": 1.0,
+  "baseline": {
+    "questions": 30,
+    "r@1": 0.9,
+    "r@1_hits": 27,
+    "r@3": 1.0,
+    "r@3_hits": 30,
+    "r@5": 1.0,
+    "r@5_hits": 30,
+    "r@10": 1.0,
+    "r@10_hits": 30,
+    "mrr": 0.9444444444444444,
+    "mean_latency_ms": 30.754929998268683,
+    "reranker_latency_ms": 0.0,
+    "total_latency_ms": 30.754929998268683
+  },
+  "treatment": {
+    "questions": 30,
+    "r@1": 0.9,
+    "r@1_hits": 27,
+    "r@3": 1.0,
+    "r@3_hits": 30,
+    "r@5": 1.0,
+    "r@5_hits": 30,
+    "r@10": 1.0,
+    "r@10_hits": 30,
+    "mrr": 0.9444444444444445,
+    "mean_latency_ms": 30.754929998268683,
+    "reranker_latency_ms": 554.0984800085425,
+    "total_latency_ms": 584.8534100068113
+  },
+  "corrections": [
+    "salah-02",
+    "sawm-14"
+  ],
+  "regressions": [
+    "salah-03",
+    "salah-12"
+  ],
+  "unresolved": [
+    "salah-01",
+    "salah-04",
+    "salah-05",
+    "salah-06",
+    "salah-07",
+    "salah-08",
+    "salah-09",
+    "salah-10",
+    "salah-11",
+    "salah-13",
+    "salah-14",
+    "salah-15",
+    "sawm-01",
+    "sawm-02",
+    "sawm-03",
+    "sawm-04",
+    "sawm-05",
+    "sawm-06",
+    "sawm-07",
+    "sawm-08",
+    "sawm-09",
+    "sawm-10",
+    "sawm-11",
+    "sawm-12",
+    "sawm-13",
+    "sawm-15"
+  ],
+  "use_reranker": false,
+  "decision_rule": "Use only with higher R@1/R@3 or >=0.02 MRR gain, no R@1/R@3 regression; Top-10 candidates fixed."
+}

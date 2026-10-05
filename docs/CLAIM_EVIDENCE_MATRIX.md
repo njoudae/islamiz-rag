@@ -7,11 +7,11 @@ Claims are intentionally narrower than aspirations. `IMPLEMENTED` means executab
 | Targets **الحوار المعرفي والإجابات الموثوقة** | IMPLEMENTED | `submission.json`, `JUDGING.md` |
 | Uses the approved Dorar Fiqh Encyclopedia collection by default | IMPLEMENTED | `apps/api/app/models/domain.py`, `apps/api/app/ingestion/adapters.py`, `apps/web/lib/content.ts` |
 | Ibn Baz is not the default or fallback | IMPLEMENTED | `SourceCollection`, `adapter_for`, `DemoFatwaRepository`; test coverage in `test_submission_safety.py` |
-| “No Source = No Answer” | IMPLEMENTED | `AnswerResponse.no_answer_without_source`, `AnswerService.answer`, `test_no_source_no_answer` |
+| “No Source = No Answer” | IMPLEMENTED | `AnswerResponse.no_answer_without_source`, `FinalRagService.answer`, final generation regression |
 | Original source identity is preserved | IMPLEMENTED | `FatwaDocument`, `FatwaChunk`, `Citation`; adapter/chunk/source tests |
 | Original cleaned source text is preserved separately from retrieval normalization | IMPLEMENTED | `full_original_text`, `retrieval_text`, content hash; `test_original_source_text_is_preserved` |
 | Missing context produces a clarification | IMPLEMENTED | `QueryUnderstandingService`, `EvidenceSufficiencyEvaluator`, `test_missing_context_requests_clarification` |
-| Insufficient evidence does not generate a ruling | IMPLEMENTED | `AnswerService`, `test_insufficient_evidence_escalates` |
+| Insufficient evidence does not generate a ruling | IMPLEMENTED | `FinalRagService`, final generation regression case 07 |
 | Complex cases are escalated | IMPLEMENTED | complexity flags and `COMPLEX_CASE`; corresponding test |
 | Conflicting evidence is not merged | IMPLEMENTED | `conflicting_positions` gate and `test_conflicting_evidence_is_not_merged` |
 | Out-of-scope questions do not generate fatwas | IMPLEMENTED | intent routing and `test_out_of_scope_does_not_generate_fatwa` |
@@ -32,4 +32,3 @@ Claims are intentionally narrower than aspirations. `IMPLEMENTED` means executab
 | Public deployment exists | PLANNED | no live URL in repository |
 | Presentation exists in submission package | NOT YET | local ignored deck only; must add/submit final approved artifact |
 | ≤2-minute video exists | NOT YET | script and shot list only |
-

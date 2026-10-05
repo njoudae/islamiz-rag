@@ -1,0 +1,17 @@
+{
+  "model_key": "bge_m3",
+  "model_name": "BAAI/bge-m3",
+  "representation": "D2",
+  "normalization": "NFKC + remove Arabic diacritics/tatweel + alef/ya mapping + punctuation/whitespace normalization",
+  "unit_count": 584,
+  "embedding_shape": [
+    584,
+    1024
+  ],
+  "reranker_enabled": false,
+  "reranker_model": null,
+  "scope": [
+    "Kitab al-Salah",
+    "Kitab al-Sawm"
+  ]
+}

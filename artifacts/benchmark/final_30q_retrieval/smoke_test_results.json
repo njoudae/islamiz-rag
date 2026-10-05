@@ -1,0 +1,113 @@
+{
+  "health": {
+    "status": "ok",
+    "source_scope": "DORAR_FINAL:SALAH+SAWM",
+    "retrieval": "BAAI/bge-m3:D2:top1"
+  },
+  "reranker_enabled": false,
+  "case_count": 6,
+  "passed": 6,
+  "all_passed": true,
+  "cases": [
+    {
+      "id": "salah_formal",
+      "question": "ما حكم تكبيرة الإحرام في الصلاة؟",
+      "expected_unit_id": "nav-00506",
+      "selected_unit_id": "nav-00506",
+      "selected_title": "المطلب الأوَّلُ: حُكمُ تكبيرةِ الإحرامِ",
+      "retrieval_score": 0.7759769558906555,
+      "api_status": 200,
+      "answer_state": "ANSWERABLE",
+      "selected_correct": true,
+      "state_correct": true,
+      "backend_citations_only": true,
+      "citation_urls": [
+        "https://dorar.net/feqhia/899"
+      ],
+      "passed": true
+    },
+    {
+      "id": "salah_colloquial",
+      "question": "أنا مسافر وبجلس أربعة أيام، أقصر الصلاة ولا لا؟",
+      "expected_unit_id": "nav-00828",
+      "selected_unit_id": "nav-00828",
+      "selected_title": "المطلب الثاني: عدم نيةُ الإقَامَةِ في السَّفرِ",
+      "retrieval_score": 0.7229697704315186,
+      "api_status": 200,
+      "answer_state": "NEEDS_CLARIFICATION",
+      "clarification_question": "هل تقصد أربعة أيام كاملة غير يومَي الوصول والمغادرة، أم أربعة أيام تشمل هذين اليومين؟",
+      "selected_correct": true,
+      "state_correct": true,
+      "backend_citations_only": true,
+      "citation_urls": [],
+      "passed": true
+    },
+    {
+      "id": "sawm_formal",
+      "question": "من كان مرضه مزمنًا لا يرجى شفاؤه، ماذا يلزمه إذا أفطر؟",
+      "expected_unit_id": "nav-01521",
+      "selected_unit_id": "nav-01521",
+      "selected_title": "المبحث الرابع: ما يلزَمُ المريضَ مرضًا لا يُرجى برؤُه",
+      "retrieval_score": 0.7426072359085083,
+      "api_status": 200,
+      "answer_state": "ANSWERABLE",
+      "selected_correct": true,
+      "state_correct": true,
+      "backend_citations_only": true,
+      "citation_urls": [
+        "https://dorar.net/feqhia/2683"
+      ],
+      "passed": true
+    },
+    {
+      "id": "sawm_colloquial",
+      "question": "بخاخ الربو في نهار رمضان يفطر أو لا؟",
+      "expected_unit_id": "nav-01556",
+      "selected_unit_id": "nav-01556",
+      "selected_title": "المبحث الثاني: بَخَّاخُ الرَّبْو",
+      "retrieval_score": 0.7173693180084229,
+      "api_status": 200,
+      "answer_state": "ANSWERABLE",
+      "selected_correct": true,
+      "state_correct": true,
+      "backend_citations_only": true,
+      "citation_urls": [
+        "https://dorar.net/feqhia/2746"
+      ],
+      "passed": true
+    },
+    {
+      "id": "near_neighbor",
+      "question": "صلاة فاتتني بالسفر وبقضيها بعد ما رجعت للحضر، كيف أقضيها؟",
+      "expected_unit_id": "nav-00836",
+      "selected_unit_id": "nav-00836",
+      "selected_title": "المطلب الثاني: قضاءُ صلاةِ السَّفرِ في الحضَرِ",
+      "retrieval_score": 0.7017630338668823,
+      "api_status": 200,
+      "answer_state": "ANSWERABLE",
+      "clarification_question": null,
+      "selected_correct": true,
+      "state_correct": true,
+      "backend_citations_only": true,
+      "citation_urls": [
+        "https://dorar.net/feqhia/1470"
+      ],
+      "passed": true
+    },
+    {
+      "id": "insufficient_source",
+      "question": "ما نصاب زكاة الذهب؟",
+      "expected_unit_id": null,
+      "selected_unit_id": "nav-01618",
+      "selected_title": "المبحث الثاني: نذرُ الاعتكافِ في المساجِدِ الثَّلاثةِ",
+      "retrieval_score": 0.45057934522628784,
+      "api_status": 200,
+      "answer_state": "INSUFFICIENT_EVIDENCE",
+      "selected_correct": true,
+      "state_correct": true,
+      "backend_citations_only": true,
+      "citation_urls": [],
+      "passed": true
+    }
+  ]
+}

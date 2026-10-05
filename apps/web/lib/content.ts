@@ -1,4 +1,4 @@
-import { BookOpenText, Droplets, HandCoins, Landmark, MoonStar, Plane, Salad, Shirt } from "lucide-react";
+import { Landmark, MoonStar } from "lucide-react";
 
 export const sourceIdentity = {
   collection: "OFFICIAL_HACKATHON_REFERENCE",
@@ -11,14 +11,8 @@ export const sourceIdentity = {
 
 // Exact top-level books visible in the approved reference index.
 export const categories = [
-  { slug: "tahara", name: "كتاب الطهارة", count: "من الفهرس المعتمد", icon: Droplets, tone: "sky" },
   { slug: "salah", name: "كتاب الصلاة", count: "من الفهرس المعتمد", icon: Landmark, tone: "mint" },
-  { slug: "zakat", name: "كتاب الزكاة", count: "من الفهرس المعتمد", icon: HandCoins, tone: "lime" },
   { slug: "siyam", name: "كتاب الصوم", count: "من الفهرس المعتمد", icon: MoonStar, tone: "peach" },
-  { slug: "hajj", name: "كتاب الحج", count: "من الفهرس المعتمد", icon: Plane, tone: "violet" },
-  { slug: "clothing", name: "كتاب اللباس والزينة", count: "من الفهرس المعتمد", icon: Shirt, tone: "rose" },
-  { slug: "drinks", name: "كتاب الأشربة", count: "من الفهرس المعتمد", icon: BookOpenText, tone: "amber" },
-  { slug: "food", name: "كتاب الأطعمة", count: "من الفهرس المعتمد", icon: Salad, tone: "blue" },
 ] as const;
 
 export const demoEntry = {

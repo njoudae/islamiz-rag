@@ -22,7 +22,8 @@ def clean_text(value: str) -> str:
 def normalize_arabic_for_retrieval(value: str) -> str:
     value = re.sub(r"[\u064B-\u065F\u0670]", "", value)
     value = value.translate(str.maketrans({"أ": "ا", "إ": "ا", "آ": "ا", "ى": "ي", "ؤ": "و", "ئ": "ي"}))
-    return re.sub(r"[^\w\s/]", " ", value).replace("ـ", " ").strip()
+    value = re.sub(r"[^\w\s/]", " ", value).replace("ـ", " ")
+    return re.sub(r"\s+", " ", value).strip()
 
 
 def canonical_fatwa_url(url: str, html_canonical: str | None = None) -> tuple[int, str]:

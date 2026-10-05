@@ -73,8 +73,31 @@ CREATE TABLE IF NOT EXISTS fatwa_chunks (
   source_author text,
   source_authority text,
   token_count integer,
+  topic text,
+  tags jsonb NOT NULL DEFAULT '[]',
+  hierarchy jsonb NOT NULL DEFAULT '{}',
+  section_type text NOT NULL DEFAULT 'issue',
+  ruling text,
+  evidence jsonb NOT NULL DEFAULT '[]',
+  evidence_types jsonb NOT NULL DEFAULT '[]',
+  wajh_al_dalala jsonb NOT NULL DEFAULT '[]',
+  qa_pairs jsonb NOT NULL DEFAULT '[]',
+  original_text text,
+  retrieval_text text,
   UNIQUE (fatwa_id, chunk_index)
 );
+
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS topic text;
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS tags jsonb NOT NULL DEFAULT '[]';
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS hierarchy jsonb NOT NULL DEFAULT '{}';
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS section_type text NOT NULL DEFAULT 'issue';
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS ruling text;
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS evidence jsonb NOT NULL DEFAULT '[]';
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS evidence_types jsonb NOT NULL DEFAULT '[]';
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS wajh_al_dalala jsonb NOT NULL DEFAULT '[]';
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS qa_pairs jsonb NOT NULL DEFAULT '[]';
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS original_text text;
+ALTER TABLE fatwa_chunks ADD COLUMN IF NOT EXISTS retrieval_text text;
 
 CREATE TABLE IF NOT EXISTS embeddings (
   chunk_id uuid PRIMARY KEY REFERENCES fatwa_chunks(id) ON DELETE CASCADE,
@@ -88,9 +111,20 @@ CREATE TABLE IF NOT EXISTS embeddings (
 CREATE TABLE IF NOT EXISTS conversations (
   id uuid PRIMARY KEY,
   locale text NOT NULL DEFAULT 'ar',
+  status text NOT NULL DEFAULT 'active' CHECK (status IN ('active','awaiting_clarification','completed')),
+  original_question text,
+  clarification_question text,
+  relevant_context jsonb NOT NULL DEFAULT '{}',
+  completed_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+ALTER TABLE conversations ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active';
+ALTER TABLE conversations ADD COLUMN IF NOT EXISTS original_question text;
+ALTER TABLE conversations ADD COLUMN IF NOT EXISTS clarification_question text;
+ALTER TABLE conversations ADD COLUMN IF NOT EXISTS relevant_context jsonb NOT NULL DEFAULT '{}';
+ALTER TABLE conversations ADD COLUMN IF NOT EXISTS completed_at timestamptz;
 
 CREATE TABLE IF NOT EXISTS messages (
   id uuid PRIMARY KEY,
@@ -144,5 +178,6 @@ CREATE TABLE IF NOT EXISTS ingestion_errors (
 );
 
 CREATE INDEX IF NOT EXISTS fatwas_retrieval_fts_idx ON fatwas USING gin (to_tsvector('simple', retrieval_text));
+CREATE INDEX IF NOT EXISTS fatwa_chunks_retrieval_fts_idx ON fatwa_chunks USING gin (to_tsvector('simple', retrieval_text));
 CREATE INDEX IF NOT EXISTS fatwas_title_trgm_idx ON fatwas USING gin (title gin_trgm_ops);
 CREATE INDEX IF NOT EXISTS embeddings_hnsw_idx ON embeddings USING hnsw (embedding vector_cosine_ops);

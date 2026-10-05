@@ -1,0 +1,130 @@
+{
+  "generated_at": "2026-10-03T15:22:25.305071+00:00",
+  "metrics": {
+    "generated_at": "2026-10-03T15:22:25.297362+00:00",
+    "scope": {
+      "book_count": 2,
+      "books": [
+        "كِتابُ الصَّلاةِ",
+        "كتابُ الصَّوم"
+      ]
+    },
+    "per_book": {
+      "كِتابُ الصَّلاةِ": {
+        "pages": 805,
+        "nodes": 806,
+        "counts_by_type": {
+          "kitab": 1,
+          "bab": 15,
+          "fasl": 69,
+          "mabhas": 259,
+          "matlab": 433,
+          "far": 20,
+          "masala": 1,
+          "tamhid": 8,
+          "other": 0
+        }
+      },
+      "كتابُ الصَّوم": {
+        "pages": 142,
+        "nodes": 142,
+        "counts_by_type": {
+          "kitab": 1,
+          "bab": 7,
+          "fasl": 30,
+          "mabhas": 104,
+          "matlab": 0,
+          "far": 0,
+          "masala": 0,
+          "tamhid": 0,
+          "other": 0
+        }
+      }
+    },
+    "navigation_nodes": 947,
+    "internal_anchor_units": 1,
+    "total_nodes": 948,
+    "counts_by_type": {
+      "kitab": 2,
+      "bab": 22,
+      "fasl": 99,
+      "mabhas": 363,
+      "matlab": 433,
+      "far": 20,
+      "masala": 1,
+      "tamhid": 8,
+      "other": 0
+    },
+    "terminal_nodes": 727,
+    "non_terminal_nodes": 221,
+    "nodes_with_content": 728,
+    "parent_nodes_with_children_and_own_content": 1,
+    "rulings": 596,
+    "rulings_with_attributions": 425,
+    "attribution_entity_counts": {
+      "الحنفية": 333,
+      "المالكية": 150,
+      "الشافعية": 139,
+      "الحنابلة": 83,
+      "الجمهور": 143
+    },
+    "scholar_attributions": 284,
+    "wajh_attributions": 17,
+    "riwaya_attributions": 13,
+    "consensus_claims": 1395,
+    "evidence_total": 1949,
+    "evidence_by_type": {
+      "quran": 219,
+      "sunnah": 1436,
+      "ijma": 260,
+      "qiyas": 0,
+      "other": 34
+    },
+    "wajh_al_dalala": 547,
+    "reasoning": 3,
+    "qa": 4172,
+    "footnotes": 10482,
+    "unclassified": 2414,
+    "ambiguous": 87,
+    "pages_attempted": 947,
+    "pages_fetched_successfully": 947,
+    "failed_pages": 0,
+    "http_errors": 0,
+    "parse_errors": 0,
+    "duplicate_nodes": 0,
+    "orphan_nodes": 0,
+    "missing_parent_references": 0,
+    "missing_or_empty_content": 220,
+    "elapsed_seconds": 269.614,
+    "source_root": "https://dorar.net/feqhia",
+    "extractor": "dorar_pipeline.py",
+    "llm_used": false
+  },
+  "percentages": {
+    "structural_integrity_pct": 100.0,
+    "raw_text_preservation_pct": 100.0,
+    "classification_coverage_pct": 96.009816,
+    "successful_fetch_pct": 100.0,
+    "parse_success_pct": 100.0,
+    "evidence_wajh_mapping_coverage_pct": 100.0
+  },
+  "percentage_definitions": {
+    "structural_integrity_pct": "valid parent and child references / all parent and child references",
+    "raw_text_preservation_pct": "characters in nodes satisfying raw_clean == clean(raw_original) / all stored raw characters",
+    "classification_coverage_pct": "characters assigned to ruling, evidence, reasoning, or unclassified (capped by node raw length) / stored raw characters",
+    "successful_fetch_pct": "successfully fetched or valid cached unique source pages / attempted unique source pages",
+    "parse_success_pct": "successfully parsed pages / successfully fetched pages",
+    "evidence_wajh_mapping_coverage_pct": "wajh blocks deterministically attached to evidence / all attached wajh blocks"
+  },
+  "integrity_details": {
+    "duplicate_local_ids": [],
+    "orphan_local_ids": [],
+    "missing_parent_local_ids": [],
+    "broken_child_references": []
+  },
+  "limitations": [
+    "Dorar exposes no node type field; type is inferred from explicit Arabic title prefixes.",
+    "Attributions and classifications are deterministic and conservative; raw_original remains authoritative.",
+    "Raw preservation validates the original/clean invariant, not visual rendering fidelity."
+  ]
+}

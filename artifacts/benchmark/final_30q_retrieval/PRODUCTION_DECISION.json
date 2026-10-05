@@ -1,0 +1,41 @@
+{
+  "WINNING_EMBEDDING_MODEL": "BAAI/bge-m3",
+  "WINNING_REPRESENTATION": "D2",
+  "RERANKER": "NO",
+  "PRODUCTION_RETRIEVAL": "Embedding -> Top-1",
+  "measured_reason": {
+    "baseline": {
+      "questions": 30,
+      "r@1": 0.9,
+      "r@1_hits": 27,
+      "r@3": 1.0,
+      "r@3_hits": 30,
+      "r@5": 1.0,
+      "r@5_hits": 30,
+      "r@10": 1.0,
+      "r@10_hits": 30,
+      "mrr": 0.9444444444444444,
+      "mean_latency_ms": 30.754929998268683,
+      "reranker_latency_ms": 0.0,
+      "total_latency_ms": 30.754929998268683
+    },
+    "treatment": {
+      "questions": 30,
+      "r@1": 0.9,
+      "r@1_hits": 27,
+      "r@3": 1.0,
+      "r@3_hits": 30,
+      "r@5": 1.0,
+      "r@5_hits": 30,
+      "r@10": 1.0,
+      "r@10_hits": 30,
+      "mrr": 0.9444444444444445,
+      "mean_latency_ms": 30.754929998268683,
+      "reranker_latency_ms": 554.0984800085425,
+      "total_latency_ms": 584.8534100068113
+    },
+    "candidate_coverage_r@10": 1.0,
+    "decision_rule": "Use only with higher R@1/R@3 or >=0.02 MRR gain, no R@1/R@3 regression; Top-10 candidates fixed."
+  },
+  "index_location": "artifacts/benchmark/final_30q_retrieval/production_index"
+}

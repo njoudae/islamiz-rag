@@ -31,6 +31,8 @@ type SourceView = {
   madhhabs?: string[];
   original_reference?: Array<{ raw: string; book?: string | null; volume?: string | null; page?: string | null }>;
   source_type?: string;
+  hierarchy_path?: string[];
+  evidence?: Array<{ evidence_id?: string; type?: string; text_original?: string; wajh_al_dalala_original?: string | null }>;
 };
 
 export function SourceCard({ compact = false, source }: { compact?: boolean; source?: SourceView }) {
@@ -40,13 +42,16 @@ export function SourceCard({ compact = false, source }: { compact?: boolean; sou
   const collectionName = source?.source_collection_name ?? demoEntry.collectionName;
   const authority = source?.source_authority ?? demoEntry.authority;
   const madhhabs = source?.madhhabs ?? demoEntry.madhhabs;
-  const reference = source?.original_reference?.[0]?.raw ?? demoEntry.reference;
+  const reference = source ? source.original_reference?.[0]?.raw : demoEntry.reference;
+  const hierarchy = source?.hierarchy_path ?? [];
+  const evidence = source?.evidence ?? [];
   return <section className={`source-card ${compact ? "source-card--compact" : ""}`}>
     <div className="source-card__eyebrow"><ShieldCheck size={17} /><span>المصدر الأصلي</span><b>موثّق</b></div>
     <p className="source-card__author">{collectionName}</p>
     <h3>{title}</h3>
     {!compact && excerpt && <><span className="source-card__label">النص المستند إليه</span><blockquote>«{excerpt}»</blockquote></>}
-    {!compact && <dl className="source-card__metadata"><div><dt>الجهة</dt><dd>{authority}</dd></div>{madhhabs.length > 0 && <div><dt>المذاهب المذكورة</dt><dd>{madhhabs.join("، ")}</dd></div>}{reference && <div><dt>مرجع ظاهر</dt><dd>{reference}</dd></div>}</dl>}
+    {!compact && <dl className="source-card__metadata"><div><dt>الجهة</dt><dd>{authority}</dd></div>{hierarchy.length > 0 && <div><dt>المسار</dt><dd>{hierarchy.join(" ← ")}</dd></div>}{madhhabs.length > 0 && <div><dt>المذاهب المذكورة</dt><dd>{madhhabs.join("، ")}</dd></div>}{reference && <div><dt>مرجع ظاهر</dt><dd>{reference}</dd></div>}</dl>}
+    {!compact && evidence.length > 0 && <><span className="source-card__label">أدلة المادة</span><ul>{evidence.slice(0, 3).map((item) => <li key={item.evidence_id ?? item.text_original}>{item.text_original}{item.wajh_al_dalala_original ? ` — وجه الدلالة: ${item.wajh_al_dalala_original}` : ""}</li>)}</ul></>}
     <div className="source-card__actions"><a href={url} target="_blank" rel="noreferrer"><ExternalLink size={17} />فتح المادة الأصلية</a></div>
   </section>;
 }
