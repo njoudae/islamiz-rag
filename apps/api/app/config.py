@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     qwen_reranker_model: str = "Qwen/Qwen3-Reranker-0.6B"
     openai_generation_model: str = "gpt-6.1-sol"
     openai_api_key: SecretStr | None = None
+    # Shared secret the website backend sends as X-Internal-Token. Unset = open (local dev).
+    internal_api_token: SecretStr | None = None
     default_source_collection: str = "OFFICIAL_HACKATHON_REFERENCE"
 
 
