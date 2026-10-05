@@ -1,12 +1,24 @@
+# Daleel — full local stack.
+#
+#   cp .env.example .env      # then set OPENAI_API_KEY
+#   docker compose up --build
+#
+#   Visitor site   http://localhost:8080
+#   Admin area     http://localhost:8080/login
+#
+# Request path:  browser -> site (Laravel + Vue) -> ai (FastAPI) -> postgres
+# The browser never talks to the AI service directly.
+
 services:
   postgres:
     image: pgvector/pgvector:pg16
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-daleel}
       POSTGRES_USER: ${POSTGRES_USER:-daleel}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your local .env file}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-daleel} -d ${POSTGRES_DB:-daleel}"]
       interval: 5s
@@ -15,5 +27,67 @@ services:
     volumes:
       - daleel_pg:/var/lib/postgresql/data
       - ./infra/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+
+  # RAG pipeline: retrieval, reranking, evidence gate, generation.
+  # On first start it builds the index and downloads the models (about 1.7 GB).
+  ai:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-daleel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-daleel}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY in your local .env file}
+      OPENAI_GENERATION_MODEL: ${OPENAI_GENERATION_MODEL:-gpt-6.1-sol}
+      E5_MODEL: ${E5_MODEL:-intfloat/multilingual-e5-small}
+      QWEN_RERANKER_MODEL: ${QWEN_RERANKER_MODEL:-Qwen/Qwen3-Reranker-0.6B}
+      INTERNAL_API_TOKEN: ${AI_SERVICE_TOKEN:-local-internal-token}
+    ports:
+      # Loopback only: for /health and /docs during development, not for browsers.
+      - "127.0.0.1:${AI_PORT:-8000}:8000"
+    volumes:
+      - daleel_models:/models
+
+  # The website: visitor pages, public API, question log and admin area.
+  site:
+    build:
+      context: apps/site
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_NAME: Daleel
+      APP_URL: http://localhost:${SITE_PORT:-8080}
+      APP_KEY: ${APP_KEY:-}
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB:-daleel}
+      DB_USERNAME: ${POSTGRES_USER:-daleel}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_SCHEMA: site
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: sync
+      INERTIA_SSR_ENABLED: "false"
+      AI_SERVICE_URL: http://ai:8000
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-local-internal-token}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@daleel.sa}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-daleel-admin-2026}
+      ADMIN_SHOW_CREDENTIALS: ${ADMIN_SHOW_CREDENTIALS:-true}
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
+      CONTACT_EMAIL: ${CONTACT_EMAIL:-contact@daleel.sa}
+    ports:
+      - "${SITE_PORT:-8080}:8080"
+    volumes:
+      - daleel_site:/app/storage/app/private
+
 volumes:
   daleel_pg:
+  daleel_models:
+  daleel_site:
