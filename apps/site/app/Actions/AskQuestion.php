@@ -38,13 +38,14 @@ final readonly class AskQuestion
             $parent = null;
         }
 
-        // The AI service is stateless, so a follow-up is sent together with the question it answers.
-        $aiQuery = $parent ? $parent->query."\n".$query : $query;
+        // The AI service keeps the conversation, so a follow-up only needs to name it.
+        $conversationId = $parent?->conversation_id;
 
         $startedAt = hrtime(true);
 
         try {
-            $answer = $this->ai->ask($aiQuery, $language, $answerMode);
+            $answer = $this->ai->ask($query, $language, $answerMode, $conversationId);
+            $conversationId = $answer->conversationId ?? $conversationId;
 
             $outcome = [
                 'state' => $answer->state,
@@ -75,6 +76,7 @@ final readonly class AskQuestion
 
         return Question::create([
             'parent_id' => $parent?->id,
+            'conversation_id' => $conversationId,
             'query' => $query,
             'answer_mode' => $answerMode,
             'channel' => $channel,

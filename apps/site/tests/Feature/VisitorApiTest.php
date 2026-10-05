@@ -34,27 +34,40 @@ class VisitorApiTest extends TestCase
         $this->assertSame(Channel::Voice, Question::sole()->channel);
     }
 
-    public function test_a_follow_up_is_sent_with_the_question_it_clarifies(): void
+    public function test_a_follow_up_continues_the_conversation_of_the_question_it_clarifies(): void
     {
-        Http::fake(['ai.test/v1/ask' => Http::response(['state' => 'ANSWERABLE', 'language' => 'ar', 'summary' => 'يقصر', 'citations' => [['fatwa_id' => 1, 'title' => 't', 'source_url' => 'https://dorar.net/feqhia/1']]])]);
-        $parent = Question::factory()->create(['query' => 'أنا مسافر، هل أقصر الصلاة؟', 'visitor_id' => self::VISITOR]);
+        $conversation = '5d0c0d9e-3c1b-4a53-9d0e-1f6f2f6f7a10';
+        Http::fake(['ai.test/v1/ask' => Http::response(['state' => 'ANSWERABLE', 'language' => 'ar', 'summary' => 'يقصر', 'conversation_id' => $conversation, 'citations' => [['fatwa_id' => 1, 'title' => 't', 'source_url' => 'https://dorar.net/feqhia/1']]])]);
+        $parent = Question::factory()->create(['query' => 'أنا مسافر، هل أقصر الصلاة؟', 'visitor_id' => self::VISITOR, 'conversation_id' => $conversation]);
 
         $this->postJson('/api/v1/ask', ['query' => 'سأقيم أربعة أيام', 'parent_id' => $parent->id], ['X-Visitor-Id' => self::VISITOR])->assertOk();
 
-        Http::assertSent(fn (Request $r) => $r['query'] === "أنا مسافر، هل أقصر الصلاة؟\nسأقيم أربعة أيام");
+        Http::assertSent(fn (Request $r) => $r['query'] === 'سأقيم أربعة أيام' && $r['conversation_id'] === $conversation);
         $child = Question::latest('id')->first();
         $this->assertSame($parent->id, $child->parent_id);
+        $this->assertSame($conversation, $child->conversation_id);
         $this->assertSame('سأقيم أربعة أيام', $child->query);
+    }
+
+    public function test_a_first_question_stores_the_conversation_the_ai_service_opened(): void
+    {
+        $conversation = '0b9f6c1e-52a7-4a0e-8a8e-3f1d2c4b5a69';
+        Http::fake(['ai.test/v1/ask' => Http::response(['state' => 'NEEDS_CLARIFICATION', 'language' => 'ar', 'clarification_question' => 'كم تنوي الإقامة؟', 'conversation_id' => $conversation])]);
+
+        $this->postJson('/api/v1/ask', ['query' => 'أنا مسافر، هل أقصر الصلاة؟'], ['X-Visitor-Id' => self::VISITOR])->assertOk();
+
+        Http::assertSent(fn (Request $r) => ! isset($r['conversation_id']));
+        $this->assertSame($conversation, Question::sole()->conversation_id);
     }
 
     public function test_a_follow_up_cannot_borrow_another_visitors_question(): void
     {
         Http::fake(['ai.test/v1/ask' => Http::response(['state' => 'OUT_OF_SCOPE', 'language' => 'ar'])]);
-        $parent = Question::factory()->create(['query' => 'سؤال زائر آخر', 'visitor_id' => fake()->uuid()]);
+        $parent = Question::factory()->create(['query' => 'سؤال زائر آخر', 'visitor_id' => fake()->uuid(), 'conversation_id' => fake()->uuid()]);
 
         $this->postJson('/api/v1/ask', ['query' => 'سأقيم أربعة أيام', 'parent_id' => $parent->id], ['X-Visitor-Id' => self::VISITOR])->assertOk();
 
-        Http::assertSent(fn (Request $r) => $r['query'] === 'سأقيم أربعة أيام');
+        Http::assertSent(fn (Request $r) => $r['query'] === 'سأقيم أربعة أيام' && ! isset($r['conversation_id']));
         $this->assertNull(Question::latest('id')->first()->parent_id);
     }
 

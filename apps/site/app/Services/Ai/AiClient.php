@@ -24,7 +24,7 @@ final readonly class AiClient
     /**
      * @throws AiServiceException
      */
-    public function ask(string $query, ?string $language = null, string $answerMode = 'text'): AiAnswer
+    public function ask(string $query, ?string $language = null, string $answerMode = 'text', ?string $conversationId = null): AiAnswer
     {
         try {
             $response = $this->request()
@@ -33,6 +33,7 @@ final readonly class AiClient
                     'query' => $query,
                     'language' => $language,
                     'answer_mode' => $answerMode,
+                    'conversation_id' => $conversationId,
                 ], fn ($value) => $value !== null));
         } catch (ConnectionException $exception) {
             throw AiServiceException::unreachable($exception);

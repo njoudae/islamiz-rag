@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * One question asked by a visitor, together with what the AI service returned.
  */
 #[Fillable([
-    'parent_id', 'query', 'language', 'answer_mode', 'channel', 'state', 'summary', 'explanation',
+    'parent_id', 'conversation_id', 'query', 'language', 'answer_mode', 'channel', 'state', 'summary', 'explanation',
     'clarification_question', 'escalation_message', 'citations',
     'book', 'chapter', 'related', 'confidence', 'state_reason', 'model',
     'error_code', 'error_message', 'duration_ms', 'visitor_id', 'ip_hash', 'user_agent',
