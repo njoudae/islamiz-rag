@@ -11,7 +11,7 @@ from typing import Any, Literal
 import numpy as np
 from pydantic import BaseModel, Field
 
-from app.models.domain import AnswerResponse, AskRequest, Citation, EvidenceState
+from app.models.domain import AnswerResponse, AskRequest, Citation, EvidenceState, RelatedSource
 
 
 ARABIC_DIACRITICS = re.compile(r"[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06ed]")
@@ -239,6 +239,29 @@ class FinalRagService:
             raise RuntimeError("OpenAI returned no structured grounded answer")
         return response.output_parsed
 
+    def _diagnostics(
+        self,
+        candidates: list[tuple[dict[str, Any], float]],
+        reasons: list[str | None],
+    ) -> dict[str, Any]:
+        """What retrieval looked at, for the website's admin area. Never part of the answer."""
+        scored = [(unit, max(0.0, min(1.0, score))) for unit, score in candidates]
+        return {
+            "related": [
+                RelatedSource(
+                    fatwa_id=int(unit["source_id"] or 0),
+                    title=unit["title_original"],
+                    source_url=unit["source_url"],
+                    hierarchy_path=list(reversed(unit["hierarchy_original_leaf_to_root"])),
+                    score=score,
+                )
+                for unit, score in scored[:3]
+            ],
+            "evidence_score": max((score for _unit, score in scored), default=None),
+            "reasons": [reason for reason in reasons if reason],
+            "model": self.generation_model if self._client is not None else None,
+        }
+
     async def answer(self, request: AskRequest) -> AnswerResponse:
         candidates = await self.retrieve_top(request.query, 5)
         required_clarification = self._required_clarification(request.query, candidates)
@@ -247,6 +270,7 @@ class FinalRagService:
                 state=EvidenceState.NEEDS_CLARIFICATION,
                 language=request.language or "ar",
                 clarification_question=required_clarification,
+                **self._diagnostics(candidates, ["clarification required by the retrieved source branches"]),
                 runtime_context={
                     "candidate_unit_ids": [unit["unit_id"] for unit, _score in candidates],
                     "selected_unit_ids": [],
@@ -269,6 +293,10 @@ class FinalRagService:
             "selected_unit_ids": selected_ids,
             "internal_status": generated.status,
         }
+        diagnostics = self._diagnostics(
+            candidates,
+            [f"selector: {selection.status}", selection.rationale, f"generation: {generated.status}"],
+        )
         available_evidence_ids = {
             item["evidence_id"]
             for unit in selected_units
@@ -285,6 +313,7 @@ class FinalRagService:
                 language=language,
                 clarification_question=generated.clarification_question,
                 runtime_context=runtime_context,
+                **diagnostics,
             )
         if generated.status == "ESCALATE":
             neutral = (
@@ -298,6 +327,7 @@ class FinalRagService:
                 language=language,
                 escalation_message=neutral,
                 runtime_context=runtime_context,
+                **diagnostics,
             )
         if generated.status != "ANSWER" or not grounded or not (generated.answer or "").strip():
             return AnswerResponse(
@@ -305,6 +335,7 @@ class FinalRagService:
                 language=language,
                 escalation_message="المادة المختارة لا تكفي للإجابة عن هذا السؤال دون تخمين.",
                 runtime_context=runtime_context,
+                **diagnostics,
             )
         citations = []
         for unit in selected_units:
@@ -342,4 +373,5 @@ class FinalRagService:
             explanation=f"الوحدات المختارة: {', '.join(selected_ids)}",
             citations=citations,
             runtime_context=runtime_context,
+            **diagnostics,
         )
