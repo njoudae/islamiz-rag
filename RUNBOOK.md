@@ -1,6 +1,6 @@
 # Daleel Runbook
 
-The text path is real: PostgreSQL/pgvector → multilingual E5 → lexical/vector fusion → Qwen reranking → evidence gate → OpenAI generation → citation validation. Voice questions are transcribed in the visitor's browser and then follow the same text path; the AI service's own speech endpoints remain mock.
+The text path is real: BGE-M3 dense retrieval over the committed production index (584 units, Salah and Sawm) → Top-5 → grounded source selection → OpenAI generation → server-side citation and evidence validation. Voice questions are transcribed in the visitor's browser and then follow the same text path; the AI service's own speech endpoints remain mock.
 
 ## Quick start (Docker, recommended)
 
@@ -27,16 +27,16 @@ daleel-admin-2026
 
 What happens on the first start, without any manual step:
 
-1. PostgreSQL starts with pgvector and the knowledge-base schema.
-2. The `ai` container builds the E5 index from `artifacts/corpus/documents.jsonl` (40 documents, 88 chunks) and downloads the E5 and Qwen models, about 1.7 GB, into a Docker volume. Wait for `[daleel-ai] starting API` in the logs. Until then the site answers questions with a "service unavailable" screen.
+1. PostgreSQL starts; the website keeps its data there.
+2. The `ai` container already holds the production index and the prompts. It downloads the embedding model `BAAI/bge-m3`, about 2.3 GB, into a Docker volume. Wait for `[daleel-ai] starting API` in the logs. Until then the site answers questions with a "service unavailable" screen.
 3. The `site` container creates its own `site` schema, runs migrations, and seeds the admin account. With `SEED_DEMO_DATA=true` it also adds about 90 days of synthetic questions, flagged as demo and labelled in the admin area, so the dashboards are not empty. Remove them with `docker compose exec site php artisan daleel:demo-data --purge`.
-4. The first question loads both models into memory and is noticeably slower than later ones.
+4. The first question loads the embedding model into memory and is noticeably slower than later ones.
 
-Later starts skip steps 2 and 3 and take seconds. If a port is already in use, change `SITE_PORT`, `AI_PORT` or `POSTGRES_PORT` in `.env` and rebuild.
+Later starts skip the download and the seeding and take seconds. If a port is already in use, change `SITE_PORT`, `AI_PORT` or `POSTGRES_PORT` in `.env` and rebuild.
 
 ```powershell
 docker compose logs -f ai       # follow the AI service
-docker compose down             # stop; add -v only to delete the database and model cache
+docker compose down             # stop; add -v only to delete the database, conversations and model cache
 ```
 
 ### Services
@@ -44,8 +44,8 @@ docker compose down             # stop; add -v only to delete the database and m
 | Service | Stack | Role |
 |---|---|---|
 | `site` | Laravel 13, Inertia, Vue 3, FrankenPHP | Visitor pages, public API, question log, admin area. |
-| `ai` | FastAPI, E5, Qwen reranker, OpenAI | The RAG pipeline. Not reachable from browsers. |
-| `postgres` | PostgreSQL 16 + pgvector | Schema `public` for the knowledge base, schema `site` for the website. |
+| `ai` | FastAPI, BGE-M3, OpenAI | The RAG pipeline, answering from the file index. Conversation state in SQLite on a volume. Not reachable from browsers. |
+| `postgres` | PostgreSQL 16 + pgvector | Schema `site` for the website. Schema `public` holds only the earlier ingestion experiment's tables. |
 
 ### Tests
 
@@ -64,9 +64,9 @@ The rest of this document runs the AI service directly on the host, for AI devel
 ## Prerequisites
 
 - Python 3.11+
-- Docker with Compose
 - An OpenAI API key
-- Sufficient RAM for `intfloat/multilingual-e5-small` and `Qwen/Qwen3-Reranker-0.6B` on CPU
+- Sufficient RAM for `BAAI/bge-m3` on CPU
+- Docker with Compose, only for the optional legacy PostgreSQL ingestion path
 
 ## Environment
 
@@ -87,7 +87,15 @@ apps/api/.venv-real/Scripts/python -m pip install -e ".\apps\api[dev]"
 
 On macOS/Linux use `apps/api/.venv-real/bin/python` instead.
 
-## PostgreSQL and schema
+The service loads the embedding model offline, so download it once:
+
+```powershell
+apps/api/.venv-real/Scripts/hf download BAAI/bge-m3
+```
+
+## Legacy: PostgreSQL and schema
+
+`POST /v1/ask` reads the file index and needs no database. This section and the next one rebuild the earlier 40-document E5 experiment only.
 
 ```powershell
 docker compose up -d postgres
@@ -96,7 +104,7 @@ docker compose ps
 
 On first initialization, `infra/schema.sql` enables pgvector and creates the tables/indexes. If the volume already existed before a schema change, apply the SQL explicitly or create a clean local volume only when you intentionally want to discard local data.
 
-## Knowledge-base preparation
+## Legacy: knowledge-base preparation
 
 The repository contains the controlled 40-document normalized artifact in `artifacts/corpus/documents.jsonl`. Build chunks, real E5 embeddings, the manifest, and load PostgreSQL:
 
@@ -124,7 +132,7 @@ apps/api/.venv-real/Scripts/python -m uvicorn app.main:app --app-dir apps/api --
 
 Health: `http://127.0.0.1:8000/health`. API docs: `http://127.0.0.1:8000/docs`.
 
-The first question loads E5 and Qwen and may take noticeably longer on CPU.
+The first question loads BGE-M3 and may take noticeably longer on CPU.
 
 ## Verification and evaluation
 
@@ -135,11 +143,11 @@ apps/api/.venv-real/Scripts/python -m pytest apps/api/tests
 # Deterministic offline behavior suite using mocks
 apps/api/.venv-real/Scripts/python evaluate.py
 
-# Real PostgreSQL + E5 + lexical/hybrid retrieval evaluation
+# Legacy experiment: PostgreSQL + E5 + lexical/hybrid retrieval evaluation
 $env:PYTHONPATH="apps/api"
 apps/api/.venv-real/Scripts/python evaluate_real_rag.py
 
-# Real Qwen reranking over persisted Top-20 retrieval candidates
+# Legacy experiment: Qwen reranking over persisted Top-20 retrieval candidates
 apps/api/.venv-real/Scripts/python rerank_real_rag.py
 
 # Website tests (see "Tests" above)
@@ -152,7 +160,7 @@ Real outputs are under `artifacts/retrieval/`, `artifacts/reranking/`, `artifact
 
 ## Shutdown
 
-Stop the API and frontend with `Ctrl+C`, then:
+Stop the API with `Ctrl+C`, then:
 
 ```powershell
 docker compose down
