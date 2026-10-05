@@ -1,0 +1,24 @@
+# Applies to builds that use the repository root as context (AI service, Next.js web).
+# apps/site has its own build context and its own .dockerignore.
+.git
+.env
+.env.*
+!.env.example
+
+**/node_modules
+**/.next
+**/__pycache__
+**/.pytest_cache
+**/*.py[cod]
+**/.venv
+**/.venv-real
+
+apps/site
+docs
+assets
+evaluation
+scripts
+
+# Only the normalized corpus is needed to build the index; everything else is evidence output.
+artifacts/*
+!artifacts/corpus
