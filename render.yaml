@@ -1,0 +1,34 @@
+# Render blueprint: the public demo on the free tier.
+# One container runs the website and the AI service (deploy/render/Dockerfile).
+# The database is external (Supabase), and the question is embedded by Cloudflare Workers AI.
+services:
+  - type: web
+    name: daleel
+    runtime: docker
+    plan: free
+    dockerfilePath: ./deploy/render/Dockerfile
+    dockerContext: .
+    healthCheckPath: /up
+    envVars:
+      # Secrets: entered in the Render dashboard, never committed.
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DB_URL # Supabase "Session pooler" connection string
+        sync: false
+      - key: CLOUDFLARE_ACCOUNT_ID
+        sync: false
+      - key: CLOUDFLARE_API_TOKEN
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: APP_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@daleel.sa
+      # The link is public, so the login page must not print the administrator's password.
+      - key: ADMIN_SHOW_CREDENTIALS
+        value: "false"
+      - key: CONTACT_EMAIL
+        value: contact@daleel.sa
+      - key: SEED_DEMO_DATA
+        value: "false"
