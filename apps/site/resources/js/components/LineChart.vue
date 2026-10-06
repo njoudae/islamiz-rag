@@ -95,9 +95,9 @@ function leave() {
                 <line :x1="a.x" :x2="a.x" :y1="a.ly + 3" :y2="m.t + chart.ih" style="stroke: var(--foreground)" stroke-opacity=".35" stroke-width="1" />
                 <text :x="a.x - 4" :y="a.ly" text-anchor="end" style="fill: var(--foreground); font-size: 11px">{{ a.label }}</text>
             </g>
-            <path :d="chart.area" :style="{ fill: color }" fill-opacity=".1" />
-            <path :d="chart.d" :style="{ fill: 'none', stroke: color }" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
-            <circle :cx="chart.last[0]" :cy="chart.last[1]" r="4" :style="{ fill: color, stroke: 'var(--card)' }" stroke-width="2" />
+            <path class="area-fade" :d="chart.area" :style="{ fill: color }" fill-opacity=".1" />
+            <path class="line-draw" pathLength="1" :d="chart.d" :style="{ fill: 'none', stroke: color }" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+            <circle class="end-dot" :cx="chart.last[0]" :cy="chart.last[1]" r="4" :style="{ fill: color, stroke: 'var(--card)' }" stroke-width="2" />
             <template v-if="hover !== null">
                 <line :x1="chart.x(hover)" :x2="chart.x(hover)" :y1="m.t" :y2="m.t + chart.ih" style="stroke: var(--foreground)" stroke-opacity=".4" stroke-width="1" />
                 <circle :cx="chart.x(hover)" :cy="chart.y(values[hover])" r="4.5" :style="{ fill: color, stroke: 'var(--card)' }" stroke-width="2" />

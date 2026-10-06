@@ -104,10 +104,10 @@ const items = computed(() => props.questions.data);
     </div>
 
     <div class="kpis" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))">
-        <div class="card kpi"><span class="lbl"><Icon name="inbox" size="sm" />بانتظار المراجعة</span><span class="val">{{ fmtN(kpis.pending) }}</span></div>
-        <div class="card kpi"><span class="lbl"><Icon name="thumbs-down" size="sm" />تقييم سلبي</span><span class="val">{{ fmtN(kpis.negative) }}</span></div>
-        <div class="card kpi" data-tip="إجابات قُدّمت مع أن أفضل مقطع مطابق حصل على أقل من 70%"><span class="lbl"><Icon name="gauge" size="sm" />ثقة أقل من 70%</span><span class="val">{{ fmtN(kpis.lowConfidence) }}</span></div>
-        <div class="card kpi"><span class="lbl"><Icon name="check" size="sm" />راجعتها اليوم</span><span class="val">{{ fmtN(kpis.reviewedToday) }}</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="inbox" size="sm" /></span>بانتظار المراجعة</span><span class="val">{{ fmtN(kpis.pending) }}</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="thumbs-down" size="sm" /></span>تقييم سلبي</span><span class="val">{{ fmtN(kpis.negative) }}</span></div>
+        <div class="card kpi" data-tip="إجابات قُدّمت مع أن أفضل مقطع مطابق حصل على أقل من 70%"><span class="lbl"><span class="kchip"><Icon name="gauge" size="sm" /></span>ثقة أقل من 70%</span><span class="val">{{ fmtN(kpis.lowConfidence) }}</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="check" size="sm" /></span>راجعتها اليوم</span><span class="val">{{ fmtN(kpis.reviewedToday) }}</span></div>
     </div>
 
     <section class="card">

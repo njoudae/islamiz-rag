@@ -24,7 +24,7 @@ const shape = computed(() => {
 <template>
     <svg v-if="shape" class="spark" :viewBox="`0 0 ${W} ${H}`" aria-hidden="true" style="direction: ltr">
         <path :d="shape.area" :style="{ fill: color, stroke: 'none' }" fill-opacity=".08" />
-        <path :d="shape.d" :style="{ fill: 'none', stroke: color }" stroke-opacity=".55" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" />
+        <path class="line-draw" pathLength="1" :d="shape.d" :style="{ fill: 'none', stroke: color }" stroke-opacity=".55" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" />
         <circle :cx="shape.last[0]" :cy="shape.last[1]" r="2.5" :style="{ fill: color, stroke: 'var(--card)' }" stroke-width="1.5" />
     </svg>
 </template>

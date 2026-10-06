@@ -107,10 +107,10 @@ async function copyExport() {
     <Head title="جودة النموذج" />
 
     <div class="kpis" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr))">
-        <div class="card kpi"><span class="lbl"><Icon name="gauge" size="sm" />دقة التصنيف</span><span class="val">{{ fmtPct(stats.acc) }}</span><span class="help">من {{ fmtN(stats.tot) }} مراجعة بشرية</span></div>
-        <div class="card kpi"><span class="lbl"><Icon name="book-marked" size="sm" />دقة الاستشهاد بالمصادر</span><span class="val">{{ fmtPct(citationAccuracy.value ?? NaN) }}</span><span class="help">من {{ fmtN(citationAccuracy.judged) }} إجابة تحقّق المراجِع من مصادرها</span></div>
-        <div class="card kpi"><span class="lbl"><Icon name="circle-question-mark" size="sm" />الاستيضاح عند الحاجة</span><span class="val">{{ fmtPct(stats.clar) }}</span><span class="help">من الأسئلة الغامضة فعلاً</span></div>
-        <div class="card kpi"><span class="lbl"><Icon name="layers" size="sm" />مجموعة التقييم</span><span class="val">{{ fmtN(evalSize) }}</span><span class="help">سؤالاً مراجَعاً</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="gauge" size="sm" /></span>دقة التصنيف</span><span class="val">{{ fmtPct(stats.acc) }}</span><span class="help">من {{ fmtN(stats.tot) }} مراجعة بشرية</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="book-marked" size="sm" /></span>دقة الاستشهاد بالمصادر</span><span class="val">{{ fmtPct(citationAccuracy.value ?? NaN) }}</span><span class="help">من {{ fmtN(citationAccuracy.judged) }} إجابة تحقّق المراجِع من مصادرها</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="circle-question-mark" size="sm" /></span>الاستيضاح عند الحاجة</span><span class="val">{{ fmtPct(stats.clar) }}</span><span class="help">من الأسئلة الغامضة فعلاً</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="layers" size="sm" /></span>مجموعة التقييم</span><span class="val">{{ fmtN(evalSize) }}</span><span class="help">سؤالاً مراجَعاً</span></div>
     </div>
 
     <div class="grid-2">

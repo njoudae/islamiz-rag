@@ -90,12 +90,12 @@ const maxSection = computed(() => Math.max(1, ...props.sections.map((s) => s.tot
 
     <div class="kpis">
         <div v-for="k in kpis" :key="k.label" class="card kpi">
-            <span class="lbl"><Icon :name="k.icon" size="sm" />{{ k.label }}</span>
+            <span class="lbl"><span class="kchip"><Icon :name="k.icon" size="sm" /></span>{{ k.label }}</span>
             <span class="val">{{ k.value }}</span>
             <div class="row"><Delta :cur="k.cur" :prev="k.prev" v-bind="k.opts" /><Sparkline :values="k.spark" /></div>
         </div>
         <div class="card kpi">
-            <span class="lbl"><Icon name="timer" size="sm" />زمن الإجابة (الوسيط)</span>
+            <span class="lbl"><span class="kchip"><Icon name="timer" size="sm" /></span>زمن الإجابة (الوسيط)</span>
             <span class="val">{{ p50 === null ? '—' : p50.toFixed(1) }}<small v-if="p50 !== null">ث</small></span>
             <div class="row">
                 <Delta :cur="p50" :prev="latency.previous.p50" :good-up="false" unit=" ث" />
@@ -238,12 +238,12 @@ const maxSection = computed(() => Math.max(1, ...props.sections.map((s) => s.tot
                 <p class="card-desc">الأسئلة الصوتية تُفرّغ في المتصفح قبل إرسالها.</p>
             </div>
             <div class="stack" style="height: 12px">
-                <span :style="{ flex: A.voice, '--c': 'var(--foreground)' }" :data-tip="`صوت · ${fmtPct(voiceShare, 0)}`" />
-                <span :style="{ flex: text, '--c': 'var(--st-oos)' }" :data-tip="`نص · ${fmtPct(1 - voiceShare, 0)}`" />
+                <span :style="{ flex: A.voice, '--c': 'var(--primary)' }" :data-tip="`صوت · ${fmtPct(voiceShare, 0)}`" />
+                <span :style="{ flex: text, '--c': 'var(--gold)' }" :data-tip="`نص · ${fmtPct(1 - voiceShare, 0)}`" />
             </div>
             <div class="legend">
-                <span><span class="swatch" style="--c: var(--foreground)" />صوت {{ fmtPct(voiceShare, 0) }}</span>
-                <span><span class="swatch" style="--c: var(--st-oos)" />نص {{ fmtPct(1 - voiceShare, 0) }}</span>
+                <span><span class="swatch" style="--c: var(--primary)" />صوت {{ fmtPct(voiceShare, 0) }}</span>
+                <span><span class="swatch" style="--c: var(--gold)" />نص {{ fmtPct(1 - voiceShare, 0) }}</span>
             </div>
             <table class="vtable">
                 <thead><tr><th /><th>صوت</th><th>نص</th></tr></thead>

@@ -22,7 +22,7 @@ const ordinals = ['الأول', 'الثاني', 'الثالث'];
 </script>
 
 <template>
-    <article class="ans" :id="`ans-${m.id || 'x'}`">
+    <article class="ans" :class="{ enter: !static }" :id="`ans-${m.id || 'x'}`">
         <div class="ans-head">
             <StBadge :state="s" />
             <span v-if="m.topic" class="muted" style="font-size: 0.8125rem">{{ m.topic }}</span>
