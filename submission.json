@@ -2,7 +2,9 @@
   "project_name_ar": "دليل",
   "project_name_en": "Daleel",
   "track": "الحوار المعرفي والإجابات الموثوقة",
-  "description": "واجهة عربية أولًا للوصول إلى مادة فقهية معتمدة مع بوابة كفاية دليل تمنع الإجابة غير المسندة وتوجّه الحالات الناقصة أو المعقدة إلى التوضيح أو الإحالة.",
+  "description": "مساعد عربي للأسئلة الفقهية يجيب من كتابي الصلاة والصوم في الموسوعة الفقهية للدرر السنية. يسترجع وحدات الحكم، يختار ما يجيب عن السؤال، ويولّد جوابًا مقيدًا بنصها مع المصدر والأدلة الأصلية التي يرفقها الخادم. يسأل عند نقص معلومة مؤثرة، ويمتنع عند غياب المادة، ويحيل الحالات الشخصية، ويوضّح إن لم يكن السؤال فقهيًا.",
+  "live_demo": "https://daleel-lqw1.onrender.com",
+  "repository": "https://github.com/njoudae/islamiz-rag",
   "team": [
     {
       "name": "نجود بن إسحاق",
@@ -15,49 +17,66 @@
   ],
   "interaction_modes": [
     "text",
-    "voice_provider_mock"
+    "voice question (speech recognised in the visitor's browser, then answered as text)"
   ],
   "supported_languages": [
-    "Arabic",
-    "English (limited deterministic query path)"
+    "Arabic (formal and Saudi/Gulf dialect; the evaluated path)"
   ],
   "approved_source": {
     "name": "الموسوعة الفقهية – الدرر السنية",
     "url": "https://dorar.net/feqhia",
-    "collection": "OFFICIAL_HACKATHON_REFERENCE"
+    "collection": "OFFICIAL_HACKATHON_REFERENCE",
+    "indexed_scope": "كتاب الصلاة وكتاب الصوم: 584 وحدة حكم"
   },
   "core_technologies": [
-    "Next.js 16",
-    "React 19",
-    "TypeScript",
     "FastAPI",
-    "Pydantic",
-    "PostgreSQL schema",
-    "pgvector schema",
-    "Beautiful Soup"
+    "BAAI/bge-m3 dense retrieval over a file index",
+    "OpenAI structured outputs (selection, grounded generation, scope check)",
+    "Laravel 13",
+    "Inertia.js",
+    "Vue 3",
+    "PostgreSQL",
+    "Docker Compose"
   ],
   "safety_principle": "No Source = No Answer",
+  "answer_states": [
+    "ANSWERABLE",
+    "NEEDS_CLARIFICATION",
+    "INSUFFICIENT_EVIDENCE",
+    "COMPLEX_CASE",
+    "OUT_OF_SCOPE"
+  ],
   "implemented_features": [
-    "source-aware deterministic demo retrieval",
-    "approved-source HTML adapter",
-    "evidence sufficiency gate",
-    "clarification routing",
-    "complex/conflicting/unsupported/out-of-scope routing",
-    "citation identity preservation",
-    "Arabic RTL web interface",
-    "deterministic offline evaluation"
+    "dense retrieval with BGE-M3 over 584 ruling units",
+    "LLM selection of one or more units from the top five",
+    "grounded generation limited to the selected units' original text",
+    "server-side validation of every cited unit and evidence ID",
+    "sources and original evidence text attached by the server, with links that open Dorar at the passage",
+    "clarification with server-side conversation state",
+    "refusal, referral and out-of-scope routing",
+    "Arabic RTL website with text and voice questions, answer feedback and a browsable encyclopedia index",
+    "admin area: question log, review queue, knowledge gaps, model quality, contact inbox",
+    "one-command Docker setup and a hosted demo"
   ],
   "planned_features": [
-    "production PostgreSQL/pgvector retrieval repository",
-    "external embedding model",
-    "external reranker",
-    "external grounded-generation LLM",
-    "production ASR and TTS",
-    "broad multilingual retrieval",
-    "public production deployment"
+    "indexing the remaining books of the encyclopedia",
+    "reading answers aloud and a dedicated speech-recognition provider",
+    "evaluated support for languages other than Arabic",
+    "verified referral contacts"
   ],
-  "evaluation_command": "python evaluate.py",
+  "evaluation": {
+    "retrieval": "30 authored questions: R@1 0.900, R@3 1.000, MRR 0.944 (artifacts/benchmark/final_30q_retrieval/FINAL_BENCHMARK.md)",
+    "generation": "10 authored cases: 10/10 (evaluation/generation_final_report.md)",
+    "tests": "apps/api/tests (pytest) and apps/site/tests (PHPUnit)"
+  },
+  "evaluation_command": "python scripts/run_generation_final_test_10.py",
+  "test_commands": [
+    "python -m pytest apps/api/tests",
+    "docker run --rm -v \"${PWD}/apps/site:/app\" daleel-site-dev php artisan test"
+  ],
+  "run_command": "docker compose up --build",
   "documentation": {
+    "readme": "README.md",
     "judging": "JUDGING.md",
     "runbook": "RUNBOOK.md",
     "architecture": "ARCHITECTURE.md",
