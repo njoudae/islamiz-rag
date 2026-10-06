@@ -1,6 +1,7 @@
 // Turns answers into the shape the design's answer card renders.
 import { DEMO_RESP, KB } from './content.js';
 import { norm } from './format.js';
+import { passageLink } from './passageLink.js';
 
 /** Map a response from POST /api/v1/ask onto the answer card. */
 export function fromApi(p) {
@@ -24,7 +25,8 @@ export function fromApi(p) {
             answer: p.summary || '',
             explanation: p.explanation || '',
             evidence: evidenceOf(citations),
-            sources: citations.map((c) => ({ book: c.title, href: c.source_url })),
+            // Each source opens its entry at the ruling itself.
+            sources: citations.map((c) => ({ book: c.title, href: passageLink(c.source_url, c.excerpt) })),
         };
     }
 
@@ -46,7 +48,13 @@ function evidenceOf(citations) {
     const items = citations.flatMap((c) =>
         (Array.isArray(c.evidence) ? c.evidence : [])
             .filter((e) => e?.text_original)
-            .map((e) => ({ text: clip(e.text_original, 600), ref: EVIDENCE_KIND[e.type] || c.title || '', quoted: false })),
+            .map((e) => ({
+                text: clip(e.text_original, 600),
+                ref: EVIDENCE_KIND[e.type] || c.title || '',
+                // Opens the entry at this very passage.
+                href: passageLink(e.source_url || c.source_url, e.text_original),
+                quoted: false,
+            })),
     );
     if (items.length) return items.slice(0, 4);
 
@@ -55,6 +63,7 @@ function evidenceOf(citations) {
         .slice(0, 2)
         .map((c) => ({
             text: clip(c.excerpt, 420),
+            href: passageLink(c.source_url, c.excerpt),
             ref: (c.original_reference || []).map((r) => r.raw).filter(Boolean).join('، ') || c.source_collection_name || '',
             quoted: false,
         }));

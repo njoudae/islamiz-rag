@@ -1013,6 +1013,11 @@ footer.site-foot{background:color-mix(in oklab,var(--accent) 55%,var(--backgroun
   }
 }
 
+/* Under a quoted passage: the link that opens Dorar at that passage. */
+.quote cite{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
+.quote-link{display:inline-flex;align-items:center;gap:4px;color:var(--accent-foreground);text-decoration:none;font-weight:500}
+.quote-link:hover{text-decoration:underline;text-underline-offset:3px}
+
 /* ---- Hooks for the theme in this build ---- */
 /* The design sets a tone on each dashboard figure; here the tones follow the card's position. */
 .kpis>.kpi:nth-child(6n+1){--tone:var(--primary);--tone-soft:var(--leaf-soft);--tone-ink:var(--leaf-ink)}

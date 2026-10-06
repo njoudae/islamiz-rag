@@ -76,7 +76,11 @@ const ordinals = ['الأول', 'الثاني', 'الثالث'];
                 <div v-if="m.evidence?.length" class="evid">
                     <span class="ans-label"><Icon name="quote" size="sm" />{{ m.mode === 'live' ? 'من نص الموسوعة' : 'الدليل' }}</span>
                     <div v-for="(e, i) in m.evidence" :key="i" class="quote" :class="{ para: !e.quoted }">
-                        {{ e.text }}<cite v-if="e.ref">{{ e.ref }}</cite>
+                        {{ e.text }}
+                        <cite v-if="e.ref || e.href">
+                            {{ e.ref }}
+                            <a v-if="e.href" class="quote-link" :href="e.href" target="_blank" rel="noopener">اقرأه في موضعه<Icon name="external-link" size="xs" /></a>
+                        </cite>
                     </div>
                 </div>
 
