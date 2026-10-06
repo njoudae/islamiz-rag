@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from pydantic import SecretStr
+from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -48,6 +48,13 @@ class Settings(BaseSettings):
     rerank_depth: int = 10
     cloudflare_account_id: str | None = None
     cloudflare_api_token: SecretStr | None = None
+
+    @field_validator("final_index_dir", "conversation_db_path")
+    @classmethod
+    def relative_to_repository_root(cls, value: str) -> str:
+        """A relative path, as in .env.example, means relative to the repository, wherever the process starts."""
+        path = Path(value)
+        return str(path if path.is_absolute() else Path(__file__).resolve().parents[3] / path)
 
 
 @lru_cache
