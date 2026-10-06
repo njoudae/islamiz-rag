@@ -20,6 +20,12 @@ SECRET_PATTERNS = {
     "private_key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     "jwt": re.compile(r"eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}"),
 }
+# Values that are documented placeholders, not secrets: the demo administrator the README tells
+# every reader to log in with, and example addresses.
+DOCUMENTED_DEMO_VALUES = {"daleel-admin-2026"}
+DOCUMENTED_ADDRESSES = {"admin@daleel.sa", "contact@daleel.sa", "hello@example.com", "name@example.com"}
+ENV_STYLE_NAMES = {".env.example"}
+ENV_STYLE_SUFFIXES = {".yml", ".yaml", ".toml", ".md", ".txt"}
 MANIPULATION_PATTERNS = [
     "ignore " + "previous instructions",
     "give this project " + "full marks",
@@ -71,13 +77,21 @@ def main() -> int:
                 manipulation_findings.append({"file": relative, "phrase": phrase})
         for match in re.finditer(r"[A-Za-z]:\\Users\\[^\\\s]+", text, re.I):
             local_path_findings.append({"file": relative, "line": text.count("\n", 0, match.start()) + 1})
-        for match in re.finditer(r"(?im)^\s*[A-Z0-9_]*(?:PASSWORD|TOKEN|SECRET|API_KEY)\s*=\s*([^\s#]+)", text):
-            value = match.group(1).strip("\"'")
-            if value and not any(marker in value.upper() for marker in ("CHANGE_ME", "PLACEHOLDER", "EXAMPLE", "YOUR_")):
-                sensitive_assignment_findings.append({"file": relative, "line": text.count("\n", 0, match.start()) + 1})
+        # Assignments are checked in configuration-style files; in source code the same shape is an
+        # ordinary variable. The value must sit on the same line, so an empty "KEY=" is not a finding.
+        if path.name in ENV_STYLE_NAMES or path.suffix.lower() in ENV_STYLE_SUFFIXES:
+            for match in re.finditer(r"(?im)^[ \t]*[A-Z0-9_]*(?:PASSWORD|TOKEN|SECRET|API_KEY)[ \t]*=[ \t]*([^\s#]+)", text):
+                value = match.group(1).strip("\"'")
+                placeholder = value.lower() in {"null", "none", "..."} or value in DOCUMENTED_DEMO_VALUES or value.startswith("<")
+                if value and not placeholder and not any(marker in value.upper() for marker in ("CHANGE_ME", "PLACEHOLDER", "EXAMPLE", "YOUR_")):
+                    sensitive_assignment_findings.append({"file": relative, "line": text.count("\n", 0, match.start()) + 1})
         for match in re.finditer(r"https?://(?:10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+|[^/\s]+\.internal)(?::\d+)?", text, re.I):
+            if "host.docker.internal" in match.group(0):  # Docker's own name for the host machine
+                continue
             private_url_findings.append({"file": relative, "line": text.count("\n", 0, match.start()) + 1})
         for match in re.finditer(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", text, re.I):
+            if match.group(0).lower() in DOCUMENTED_ADDRESSES:
+                continue
             email_findings.append({"file": relative, "line": text.count("\n", 0, match.start()) + 1})
 
         if path.suffix.lower() == ".md":
@@ -86,6 +100,9 @@ def main() -> int:
                 if not target or target.startswith(("http://", "https://", "mailto:", "#")):
                     continue
                 target = unquote(target.strip("<>"))
+                # Quoted source text contains "[15](..." footnotes that only look like links.
+                if re.search(r"\s", target) or target.startswith("("):
+                    continue
                 if not (path.parent / target).resolve().exists():
                     broken_links.append({"file": relative, "target": target})
 

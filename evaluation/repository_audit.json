@@ -1,25 +1,12 @@
 {
-  "files_scanned": 114,
+  "files_scanned": 296,
   "secret_findings": [],
   "evaluator_manipulation_findings": [],
   "local_absolute_path_findings": [],
-  "sensitive_assignment_findings": [
-    {
-      "file": ".env.example",
-      "line": 14
-    },
-    {
-      "file": "README.md",
-      "line": 63
-    },
-    {
-      "file": "README.md",
-      "line": 65
-    }
-  ],
+  "sensitive_assignment_findings": [],
   "private_url_findings": [],
   "email_address_findings": [],
   "broken_documentation_links": [],
   "missing_required_files": [],
-  "passed": false
+  "passed": true
 }
