@@ -32,8 +32,8 @@ const hasExample = computed(() => thread.value.some((m) => m.example));
 
 function ensureExample() {
     if (thread.value.length) return;
-    thread.value.push({ role: 'user', id: 'ex0', text: 'هل ينقض خروج الريح الوضوء؟', ch: 'text', example: true });
-    thread.value.push({ role: 'bot', id: 'ex1', ...KB.wudu_wind, latency: 2.1, mode: 'example', example: true });
+    thread.value.push({ role: 'user', id: 'ex0', text: 'هل صلاة الجمعة فرض عين؟', ch: 'text', example: true });
+    thread.value.push({ role: 'bot', id: 'ex1', ...KB.jumuah_fard, latency: 2.1, mode: 'example', example: true });
 }
 
 async function scrollThread() {

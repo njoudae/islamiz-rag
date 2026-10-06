@@ -10,7 +10,7 @@ import { ORN } from '../../lib/icons.js';
 defineOptions({ layout: PublicLayout });
 
 // A prepared example answer, shown as it would appear on the ask page.
-const sample = { ...KB.wudu_wind, latency: 2.4, mode: 'example', ch: 'voice' };
+const sample = { ...KB.jumuah_fard, latency: 2.4, mode: 'example', ch: 'voice' };
 </script>
 
 <template>
@@ -33,7 +33,7 @@ const sample = { ...KB.wudu_wind, latency: 2.4, mode: 'example', ch: 'voice' };
             <div class="hero-stage" aria-label="مثال لإجابة">
                 <div class="turn" style="gap: 12px">
                     <div class="qa-user">
-                        هل ينقض خروج الريح الوضوء؟
+                        هل صلاة الجمعة فرض عين؟
                         <div class="meta"><Icon name="mic" size="xs" />سؤال صوتي، فُرّغ إلى نص</div>
                     </div>
                     <AnswerCard :m="sample" static />
