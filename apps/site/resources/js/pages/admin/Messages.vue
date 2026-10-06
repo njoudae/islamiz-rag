@@ -89,9 +89,9 @@ const mailto = (m) => `mailto:${m.email}?subject=${encodeURIComponent('رد من
     </div>
 
     <div class="kpis" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))">
-        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="mail" size="sm" /></span>رسائل جديدة</span><span class="val">{{ fmtN(counts.new) }}</span></div>
-        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="check" size="sm" /></span>مقروءة</span><span class="val">{{ fmtN(counts.read) }}</span></div>
-        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="inbox" size="sm" /></span>مؤرشفة</span><span class="val">{{ fmtN(counts.archived) }}</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="mail" size="sm" /></span>رسائل جديدة</span><span v-count-up class="val">{{ fmtN(counts.new) }}</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="check" size="sm" /></span>مقروءة</span><span v-count-up class="val">{{ fmtN(counts.read) }}</span></div>
+        <div class="card kpi"><span class="lbl"><span class="kchip"><Icon name="inbox" size="sm" /></span>مؤرشفة</span><span v-count-up class="val">{{ fmtN(counts.archived) }}</span></div>
     </div>
 
     <section class="card">

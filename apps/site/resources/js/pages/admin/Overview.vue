@@ -91,12 +91,12 @@ const maxSection = computed(() => Math.max(1, ...props.sections.map((s) => s.tot
     <div class="kpis">
         <div v-for="k in kpis" :key="k.label" class="card kpi">
             <span class="lbl"><span class="kchip"><Icon :name="k.icon" size="sm" /></span>{{ k.label }}</span>
-            <span class="val">{{ k.value }}</span>
+            <span v-count-up class="val">{{ k.value }}</span>
             <div class="row"><Delta :cur="k.cur" :prev="k.prev" v-bind="k.opts" /><Sparkline :values="k.spark" /></div>
         </div>
         <div class="card kpi">
             <span class="lbl"><span class="kchip"><Icon name="timer" size="sm" /></span>زمن الإجابة (الوسيط)</span>
-            <span class="val">{{ p50 === null ? '—' : p50.toFixed(1) }}<small v-if="p50 !== null">ث</small></span>
+            <span v-count-up class="val">{{ p50 === null ? '—' : p50.toFixed(1) }}<small v-if="p50 !== null">ث</small></span>
             <div class="row">
                 <Delta :cur="p50" :prev="latency.previous.p50" :good-up="false" unit=" ث" />
                 <span class="help num">p95 {{ p95 === null ? '—' : p95.toFixed(1) + ' ث' }}</span>

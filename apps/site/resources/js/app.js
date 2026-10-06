@@ -1,5 +1,6 @@
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
+import { countUp } from './lib/countUp.js';
 import { installTooltip } from './lib/ui.js';
 
 const pages = import.meta.glob('./pages/**/*.vue');
@@ -18,6 +19,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
+            .directive('count-up', countUp)
             .mount(el);
         el.classList.add('animate');
         installTooltip();
