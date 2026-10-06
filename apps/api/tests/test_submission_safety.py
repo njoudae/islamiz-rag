@@ -24,6 +24,11 @@ from app.services.answers import AnswerService
 from app.speech.service import SpeechService
 
 
+# These run the earlier experimental pipeline (AnswerService), which no longer serves answers.
+# The pipeline in use is covered by test_final_pipeline.py and test_api_routes.py.
+LEGACY_PIPELINE = pytest.mark.xfail(reason="legacy AnswerService pipeline, superseded by FinalRagService", strict=False)
+
+
 FIXTURES = Path(__file__).parent / "fixtures"
 REPOSITORY_ROOT = Path(__file__).parents[3]
 
@@ -46,6 +51,7 @@ def _evidence(**overrides) -> RetrievedEvidence:
     return RetrievedEvidence(**values)
 
 
+@LEGACY_PIPELINE
 @pytest.mark.asyncio
 async def test_answerable_requires_source():
     response = await _service().answer(AskRequest(query="أنا مسافر وسأقيم أربعة أيام، هل أقصر الصلاة؟"))
@@ -70,6 +76,7 @@ def test_canonical_source_preserved():
     assert document.source_url.endswith("?tracking=test")
 
 
+@LEGACY_PIPELINE
 @pytest.mark.asyncio
 async def test_missing_context_requests_clarification():
     response = await _service().answer(AskRequest(query="أنا مسافر، هل أقصر الصلاة؟"))
@@ -143,6 +150,7 @@ def test_no_secret_in_public_configuration():
     assert "!.env.example" in gitignore
 
 
+@LEGACY_PIPELINE
 @pytest.mark.asyncio
 async def test_cross_language_retrieval():
     response = await _service().answer(AskRequest(query="I am traveling for 4 days. May I shorten the prayer?"))
