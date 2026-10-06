@@ -108,14 +108,13 @@ def main() -> int:
 
     required = [
         "README.md", "JUDGING.md", "RUNBOOK.md", "ARCHITECTURE.md", "LIMITATIONS.md",
-        "submission.json", "evaluation/evaluation_cases.json",
-        "evaluation/results.json", "evaluation/REPORT.md", "docs/VIDEO_SCRIPT_AR.md",
+        "submission.json", "evaluation/generation_final_report.md",
+        "artifacts/benchmark/final_30q_retrieval/FINAL_BENCHMARK.md", "docs/VIDEO_SCRIPT_AR.md",
         "docs/VIDEO_SHOTLIST.md", "docs/sources-and-licenses.md",
     ]
     missing_required = [item for item in required if not (ROOT / item).exists()]
     json.loads((ROOT / "submission.json").read_text(encoding="utf-8"))
-    json.loads((ROOT / "evaluation" / "evaluation_cases.json").read_text(encoding="utf-8"))
-    json.loads((ROOT / "evaluation" / "results.json").read_text(encoding="utf-8"))
+    json.loads((ROOT / "evaluation" / "generation_final_results.json").read_text(encoding="utf-8"))
 
     payload = {
         "files_scanned": len(files),

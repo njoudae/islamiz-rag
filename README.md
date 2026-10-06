@@ -136,7 +136,6 @@ artifacts/dorar_final_dataset/four_books/       corpus النهائي
 artifacts/benchmark/final_30q_retrieval/        benchmark وفهرس الإنتاج
 evaluation/               مجموعات ونتائج التقييم النهائية والتطويرية
 prompts/                  prompts الإنتاج المرجعية
-infra/schema.sql          مخطط PostgreSQL/pgvector لمسار ingestion القديم
 run_final_30q_pipeline.py بناء benchmark والفهرس من dataset المخزن
 scripts/run_generation_final_test_10.py          تقييم التوليد النهائي
 ```
@@ -148,7 +147,6 @@ scripts/run_generation_final_test_10.py          تقييم التوليد ال�
 - Python 3.11+
 - ذاكرة كافية لتحميل BGE-M3؛ GPU اختياري للتشغيل، ومطلوب لإعادة benchmark الكامل كما يفرض السكربت.
 - مفتاح OpenAI لمسار التوليد والتقييم النهائي.
-- Docker Compose فقط إذا أردت تشغيل مخطط ingestion/PostgreSQL الاختياري.
 
 من جذر المستودع في PowerShell:
 
@@ -171,20 +169,15 @@ apps/api/.venv-real/Scripts/hf download BAAI/bge-m3
 | `INTERNAL_API_TOKEN` | عند النشر | سرّ مشترك يرسله الموقع في `X-Internal-Token`؛ يحمي `/v1/*`. في Docker يُضبط من `AI_SERVICE_TOKEN` |
 | `APP_ENV` | لا | استخدم `production` في النشر؛ يعطل docs والصوت mock |
 | `ALLOWED_ORIGINS` | عند النشر | JSON array لأصول CORS المسموحة |
-| `DATABASE_URL` و`POSTGRES_*` | لمسار DB فقط | PostgreSQL/pgvector الاختياري |
+| `POSTGRES_*` | للموقع | قاعدة بيانات الموقع في Docker |
 
 `EMBEDDING_PROVIDER=bge_m3` و`RERANKER_PROVIDER=disabled` و`GENERATION_PROVIDER=openai` موثقة في `.env.example`. الصوت معطل افتراضيًا؛ mock لا يعمل عندما يكون `APP_ENV=production`.
 
-## قاعدة البيانات وdata ingestion
+## البيانات والفهرس
 
-`POST /v1/ask` يقرأ الفهرس الملفي النهائي مباشرة ولا يحتاج PostgreSQL. المخطط في `infra/schema.sql` يخص مسار ingestion التاريخي القابل لإعادة البناء، ويُنشأ اختياريًا عبر:
+`POST /v1/ask` يقرأ الفهرس الملفي النهائي مباشرة ولا يحتاج قاعدة بيانات؛ PostgreSQL يخص الموقع وحده (سجل الأسئلة، المراجعات، رسائل التواصل).
 
-```powershell
-docker compose up -d postgres
-docker compose exec postgres psql -U daleel -d daleel -f /docker-entrypoint-initdb.d/001-schema.sql
-```
-
-الـcorpus النهائي مجمد ولا يحتاج scraping للتشغيل. لبناء benchmark والفهرس من `nodes.jsonl` المخزن، شغّل أمر التقييم أدناه. توجد أوامر ingestion القديمة تحت `daleel-ingest` للتجارب السابقة، لكنها ليست مصدر فهرس `/v1/ask` النهائي.
+البيانات المستخرجة مجمّدة في `artifacts/dorar_final_dataset/four_books/` ولا يحتاج التشغيل إلى أي scraping. لإعادة بناء benchmark والفهرس من `nodes.jsonl` المخزن، شغّل أمر تقييم الاسترجاع أدناه.
 
 ## التشغيل
 
@@ -212,7 +205,7 @@ $env:TRANSFORMERS_OFFLINE="1"
 apps/api/.venv-real/Scripts/python scripts/run_generation_final_test_10.py
 ```
 
-لعرض النتائج افتح [`artifacts/evaluation/results.csv`](artifacts/evaluation/results.csv)، [`retrieval_metrics.json`](artifacts/evaluation/retrieval_metrics.json)، و[`reranker_metrics.json`](artifacts/evaluation/reranker_metrics.json). توليد GPT الحقيقي يحتاج `OPENAI_API_KEY` وقد يستهلك رصيد API؛ آخر النتائج الحقيقية محفوظة بالفعل في `artifacts/generation/`.
+النتائج المحفوظة لآخر تشغيل: [`FINAL_BENCHMARK.md`](artifacts/benchmark/final_30q_retrieval/FINAL_BENCHMARK.md) للاسترجاع، و[`generation_final_report.md`](evaluation/generation_final_report.md) للتوليد. تقييم التوليد يحتاج `OPENAI_API_KEY` ويستهلك رصيد API.
 
 ## الاختبارات
 
@@ -307,7 +300,6 @@ Content-Type: application/json
 - selector والمولّد يعتمدان على OpenAI ويضيفان زمنًا وتكلفة؛ لا يوجد fallback توليدي محلي.
 - خدمة الذكاء الاصطناعي محمية برمز داخلي فقط؛ دخول المشرف وتحديد معدل الطلبات في الموقع. النسخة المستضافة للعرض تعمل على استضافة مجانية بلا مراقبة أو ضمان توفر.
 - بيانات الاتصال بالجهات المختصة فارغة حاليًا؛ لا تُخترع جهات أو أرقام.
-- مخطط PostgreSQL يمثل مسار ingestion السابق ولا يخزن فهرس BGE-M3 النهائي ذي 1024 بعدًا.
 - راجع `docs/sources-and-licenses.md` قبل توزيع نصوص المصدر، ولا يوجد ترخيص مشروع عام في المستودع.
 
 ## العمل المستقبلي

@@ -62,7 +62,3 @@ apps/api/.venv-real/Scripts/python scripts/run_generation_final_test_10.py
 ```powershell
 apps/api/.venv-real/Scripts/python -m pytest apps/api/tests
 ```
-
-## تجارب التطوير
-
-ملفات مثل `evaluation_cases.json` و`results.json` و`REPORT.md` و`real_rag_questions.jsonl`، وكذلك مجلدات `artifacts/evaluation/` و`artifacts/generation_final_test_10/`، تسجل مراحل وتجارب سابقة. حُفظت للتدقيق ولم تُحذف، لكنها ليست بديلًا عن التقييم النهائي أعلاه.

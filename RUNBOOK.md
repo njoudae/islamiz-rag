@@ -45,7 +45,7 @@ docker compose down             # stop; add -v only to delete the database, conv
 |---|---|---|
 | `site` | Laravel 13, Inertia, Vue 3, FrankenPHP | Visitor pages, public API, question log, admin area. |
 | `ai` | FastAPI, BGE-M3, OpenAI | The RAG pipeline, answering from the file index. Conversation state in SQLite on a volume. Not reachable from browsers. |
-| `postgres` | PostgreSQL 16 + pgvector | Schema `site` for the website. Schema `public` holds only the earlier ingestion experiment's tables. |
+| `postgres` | PostgreSQL 16 | The website's data, in schema `site`. The AI service does not use it. |
 
 ### Tests
 
@@ -66,7 +66,6 @@ The rest of this document runs the AI service directly on the host, for AI devel
 - Python 3.11+
 - An OpenAI API key
 - Sufficient RAM for `BAAI/bge-m3` on CPU
-- Docker with Compose, only for the optional legacy PostgreSQL ingestion path
 
 ## Environment
 
@@ -76,7 +75,7 @@ From the repository root:
 Copy-Item .env.example .env
 ```
 
-Set a local `POSTGRES_PASSWORD`, place the same value in `DATABASE_URL`, and set `OPENAI_API_KEY`. Never commit or print `.env`.
+Set `OPENAI_API_KEY`. Never commit or print `.env`.
 
 ## Install
 
@@ -92,37 +91,6 @@ The service loads the embedding model offline, so download it once:
 ```powershell
 apps/api/.venv-real/Scripts/hf download BAAI/bge-m3
 ```
-
-## Legacy: PostgreSQL and schema
-
-`POST /v1/ask` reads the file index and needs no database. This section and the next one rebuild the earlier 40-document E5 experiment only.
-
-```powershell
-docker compose up -d postgres
-docker compose ps
-```
-
-On first initialization, `infra/schema.sql` enables pgvector and creates the tables/indexes. If the volume already existed before a schema change, apply the SQL explicitly or create a clean local volume only when you intentionally want to discard local data.
-
-## Legacy: knowledge-base preparation
-
-The repository contains the controlled 40-document normalized artifact in `artifacts/corpus/documents.jsonl`. Build chunks, real E5 embeddings, the manifest, and load PostgreSQL:
-
-```powershell
-Push-Location apps/api
-.\.venv-real\Scripts\python -m app.ingestion.cli build-real-index
-Pop-Location
-```
-
-This creates `artifacts/chunks/chunks.jsonl`, `artifacts/embeddings/manifest.json`, and a local ignored `chunk_embeddings.npy`, then loads 40 documents, 88 chunks, and 88 vectors. To reload an already-generated local matrix without rerunning E5:
-
-```powershell
-Push-Location apps/api
-.\.venv-real\Scripts\python -m app.ingestion.cli load-cached-index
-Pop-Location
-```
-
-Do not recrawl unless authorized and necessary. Source redistribution rights remain a publication blocker; see `docs/sources-and-licenses.md`.
 
 ## Backend
 
@@ -155,7 +123,7 @@ apps/api/.venv-real/Scripts/python scripts/repository_audit.py
 
 Saved results of the last runs are in `evaluation/generation_final_report.md` and `artifacts/benchmark/final_30q_retrieval/FINAL_BENCHMARK.md`.
 
-Four tests in the suite are marked as expected failures: they exercise the earlier experimental pipeline, which no longer serves answers. The scripts `evaluate.py`, `evaluate_real_rag.py`, `rerank_real_rag.py` and `generate_real_answers.py`, with their outputs under `artifacts/retrieval/`, `artifacts/reranking/`, `artifacts/generation/` and `evaluation/REPORT.md`, belong to that earlier experiment and are kept for the record.
+Four tests in the suite are marked as expected failures: they exercise the earlier experimental pipeline code, which no longer serves answers.
 
 ## Shutdown
 

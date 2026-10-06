@@ -49,7 +49,7 @@ Audited **2026-10-06**. `USED` means it runs in, or is shipped with, the product
 | USED | psycopg | `>=3.2,<4` | PostgreSQL driver (optional conversation store, earlier ingestion path) | LGPL-3.0 |
 | USED | Beautiful Soup, Typer, SQLAlchemy, python-multipart | Ranges in `apps/api/pyproject.toml` | Source parsing and the earlier ingestion tooling; installed with the service | MIT (Beautiful Soup, Typer, SQLAlchemy), Apache-2.0 (python-multipart) |
 | USED | pytest, pytest-asyncio, respx | Dev ranges in `apps/api/pyproject.toml` | AI service tests | MIT (pytest), Apache-2.0 (pytest-asyncio), BSD-3-Clause (respx) |
-| USED | PostgreSQL with pgvector image | `pgvector/pgvector:pg16` | The website's database. The pgvector extension is not used to answer questions | PostgreSQL License |
+| USED | PostgreSQL | `pgvector/pgvector:pg16` image | The website's database. The image's pgvector extension is not used | PostgreSQL License |
 | USED | SQLite | Bundled with Python | Server-side conversation state for clarifications | Public domain |
 | USED | Docker, Docker Compose | Host tooling | Runs the whole stack with one command | Apache-2.0 |
 

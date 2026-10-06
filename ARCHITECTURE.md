@@ -55,7 +55,7 @@ conversation state)]
 | `ai` | `apps/api` | Retrieval, selection, generation, conversation state | `site` only (loopback port 8000 for `/health` and `/docs`) |
 | `postgres` | Laravel migrations | Schema `site`: website data | Internal |
 
-Each side owns its data. The AI service reads the file index and keeps conversation state in SQLite; Laravel migrations manage everything in the `site` schema. `infra/schema.sql` belongs to the earlier ingestion experiment and is not used to answer questions.
+Each side owns its data. The AI service reads the file index and keeps conversation state in SQLite; Laravel migrations manage everything in the `site` schema.
 
 The response body of `POST /api/v1/ask` has the same fields as the AI service's `AnswerResponse`, plus the stored question `id`.
 
