@@ -25,9 +25,10 @@ services:
         generateValue: true
       - key: ADMIN_EMAIL
         value: admin@daleel.sa
-      # The link is public, so the login page must not print the administrator's password.
+      # The login page shows the administrator's email and password with a fill button, so judges
+      # can open the admin area without being sent credentials. Anyone with the link can do the same.
       - key: ADMIN_SHOW_CREDENTIALS
-        value: "false"
+        value: "true"
       - key: CONTACT_EMAIL
         value: contact@daleel.sa
       - key: SEED_DEMO_DATA
