@@ -58,6 +58,8 @@ export const STATUS = {
     actLabel: 'أسباب الفشل', actRoute: 'admin-quality'
   }
 };
+/* The accent tone each encyclopedia group uses in the theme. */
+export const GROUP_TONE = { ibadat: 'green', food: 'gold', family: 'rose', oaths: 'sky', muamalat: 'teal', qada: 'gold', mawarith: 'green' };
 export const ST_ORDER = ['ANSWERABLE','NEEDS_CLARIFICATION','INSUFFICIENT_EVIDENCE','COMPLEX_CASE','CONFLICTING_EVIDENCE','OUT_OF_SCOPE','FAILED'];
 /* Order used where colours touch (stacked bar): keeps similar hues apart. */
 export const ST_BAR = ['ANSWERABLE','CONFLICTING_EVIDENCE','NEEDS_CLARIFICATION','COMPLEX_CASE','INSUFFICIENT_EVIDENCE','OUT_OF_SCOPE','FAILED'];

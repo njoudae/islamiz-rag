@@ -19,6 +19,7 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .mount(el);
+        el.classList.add('animate');
         installTooltip();
     },
     progress: { color: 'currentColor' },

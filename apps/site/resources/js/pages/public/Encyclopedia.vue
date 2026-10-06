@@ -3,7 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import Icon from '../../components/Icon.vue';
 import PublicLayout from '../../layouts/PublicLayout.vue';
-import { BOOKS, BOOK_GROUPS, DORAR } from '../../lib/content.js';
+import { BOOKS, BOOK_GROUPS, DORAR, GROUP_TONE } from '../../lib/content.js';
 import { booksAr, fmtN, norm } from '../../lib/format.js';
 
 defineOptions({ layout: PublicLayout });
@@ -117,13 +117,13 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
 
         <div style="padding-bottom: 48px">
             <template v-for="g in groups" :key="g.id">
-                <div class="group-title">
-                    <h2>{{ g.name }}</h2>
+                <div class="group-title reveal" :data-tone="GROUP_TONE[g.id]">
+                    <span class="gdot" /><h2>{{ g.name }}</h2>
                     <span class="muted num">{{ booksAr(g.list.length) }}</span>
                     <span class="muted" style="font-size: 0.8125rem">· {{ g.note }}</span>
                 </div>
                 <div class="books">
-                    <article v-for="b in g.list" :key="b.no" class="book">
+                    <article v-for="b in g.list" :key="b.no" class="book reveal" :data-tone="GROUP_TONE[g.id]">
                         <div class="top">
                             <span class="no">الكتاب {{ b.no }}</span><span class="badge">{{ chaptersAr(b.chapters.length) }}</span>
                         </div>

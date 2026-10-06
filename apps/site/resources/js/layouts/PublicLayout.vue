@@ -45,7 +45,7 @@ const today = dHijri.format(new Date());
         </div>
     </header>
 
-    <main id="main"><slot /></main>
+    <main id="main"><div class="page-glow" aria-hidden="true"><i /><i /><i /></div><slot /></main>
 
     <footer v-if="path !== '/ask'" class="site-foot">
         <div class="wrap foot-in">

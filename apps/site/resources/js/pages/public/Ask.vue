@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/vue3';
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import AnswerCard from '../../components/AnswerCard.vue';
 import Icon from '../../components/Icon.vue';
+import Logo from '../../components/Logo.vue';
 import PublicLayout from '../../layouts/PublicLayout.vue';
 import { ApiError, aiOnline, ask as apiAsk, sendFeedback } from '../../lib/api.js';
 import { failureText, fromApi, mockAnswer } from '../../lib/answers.js';
@@ -307,15 +308,15 @@ onBeforeUnmount(() => {
             <div ref="threadEl" class="thread" aria-live="polite">
                 <span v-if="hasExample" class="example-tag"><Icon name="info" size="xs" />مثال جاهز. اكتب سؤالك أو اسأل بصوتك.</span>
                 <template v-for="m in thread" :key="m.id">
-                    <div v-if="m.role === 'user'" class="qa-user">
+                    <div v-if="m.role === 'user'" class="qa-user enter">
                         {{ m.text }}
                         <div v-if="m.ch === 'voice'" class="meta"><Icon name="mic" size="xs" />سؤال صوتي</div>
                         <div v-else-if="m.followUp" class="meta"><Icon name="circle-question-mark" size="xs" />توضيح للسؤال السابق</div>
                     </div>
-                    <div v-else-if="m.pending" :id="`ans-${m.id}`" class="ans">
+                    <div v-else-if="m.pending" :id="`ans-${m.id}`" class="ans enter">
                         <div class="pending">
-                            <span class="spinner" />
-                            <span>يبحث في الموسوعة الفقهية<span class="num">{{ m.elapsed ? ` · ${m.elapsed} ث` : '' }}</span></span>
+                            <span class="spin-star"><Logo /></span>
+                            <span>يبحث في الموسوعة الفقهية<span class="dots" aria-hidden="true"><i /><i /><i /></span><span class="num">{{ m.elapsed ? ` · ${m.elapsed} ث` : '' }}</span></span>
                             <button v-if="m.live" class="btn btn-outline btn-xs" type="button" style="margin-inline-start: auto" @click="controller?.abort()"><Icon name="square" size="xs" />إيقاف</button>
                         </div>
                         <div style="padding: 0 14px 16px; display: flex; flex-direction: column; gap: 8px">

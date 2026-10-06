@@ -5,6 +5,7 @@ import Icon from '../../components/Icon.vue';
 import StBadge from '../../components/StBadge.vue';
 import PublicLayout from '../../layouts/PublicLayout.vue';
 import { BOOK_GROUPS, DORAR, KB, STATUS, ST_PUBLIC } from '../../lib/content.js';
+import { ORN } from '../../lib/icons.js';
 
 defineOptions({ layout: PublicLayout });
 
@@ -16,10 +17,11 @@ const sample = { ...KB.wudu_wind, latency: 2.4, mode: 'example', ch: 'voice' };
     <Head title="الرئيسية" />
 
     <section class="hero">
+        <div class="hero-orn" aria-hidden="true" v-html="ORN" />
         <div class="wrap hero-grid">
             <div class="hero-copy">
                 <span class="eyebrow"><Icon name="book-open" />مبني على الموسوعة الفقهية في الدرر السنية</span>
-                <h1 class="h1">اسأل عن مسألتك الفقهية، بصوتك أو بالكتابة</h1>
+                <h1 class="h1">اسأل عن مسألتك الفقهية، <span class="grad-text">بصوتك أو بالكتابة</span></h1>
                 <p class="lead">يجيبك دليل من الموسوعة الفقهية، ويذكر الدليل والمصدر لكل إجابة، ويقول لك بوضوح متى يحتاج سؤالك إلى مفتٍ.</p>
                 <div class="hero-cta">
                     <Link class="btn btn-lg" href="/ask">اسأل دليل الآن<Icon name="arrow-left" /></Link>
@@ -42,21 +44,21 @@ const sample = { ...KB.wudu_wind, latency: 2.4, mode: 'example', ch: 'voice' };
 
     <section class="section" style="padding-top: 24px">
         <div class="wrap">
-            <div class="sec-head">
+            <div class="sec-head reveal">
                 <h2 class="h2">كيف يعمل دليل</h2>
                 <p class="muted" style="line-height: 1.8">ثلاث خطوات من السؤال إلى الإجابة. لا يجيب دليل من عنده، بل مما يجده في الموسوعة.</p>
             </div>
             <div class="steps">
-                <div class="step"><span class="step-n">الخطوة 1</span><h3>اسأل بصوتك أو بالكتابة</h3><p>تحدّث كما تسأل شيخاً، أو اكتب سؤالك. يُفرَّغ الصوت إلى نص تراه قبل الإجابة.</p></div>
-                <div class="step"><span class="step-n">الخطوة 2</span><h3>يبحث في الموسوعة الفقهية</h3><p>يجمع المسائل المتعلقة بسؤالك من كتب الموسوعة وأبوابها، مع أدلتها من الكتاب والسنة.</p></div>
-                <div class="step"><span class="step-n">الخطوة 3</span><h3>يجيب أو يصنّف سؤالك</h3><p>إن وجد الحكم أجابك بدليله ومصدره، وإن لم يجد أخبرك بالسبب وبالخطوة التالية.</p></div>
+                <div class="step reveal"><span class="step-n">الخطوة 1</span><h3>اسأل بصوتك أو بالكتابة</h3><p>تحدّث كما تسأل شيخاً، أو اكتب سؤالك. يُفرَّغ الصوت إلى نص تراه قبل الإجابة.</p></div>
+                <div class="step reveal"><span class="step-n">الخطوة 2</span><h3>يبحث في الموسوعة الفقهية</h3><p>يجمع المسائل المتعلقة بسؤالك من كتب الموسوعة وأبوابها، مع أدلتها من الكتاب والسنة.</p></div>
+                <div class="step reveal"><span class="step-n">الخطوة 3</span><h3>يجيب أو يصنّف سؤالك</h3><p>إن وجد الحكم أجابك بدليله ومصدره، وإن لم يجد أخبرك بالسبب وبالخطوة التالية.</p></div>
             </div>
         </div>
     </section>
 
     <section class="section" style="padding-top: 0">
         <div class="wrap hero-grid" style="align-items: start">
-            <div class="sec-head" style="margin: 0">
+            <div class="sec-head reveal" style="margin: 0">
                 <span class="eyebrow"><Icon name="library" />المصدر العلمي</span>
                 <h2 class="h2">52 كتاباً من الموسوعة الفقهية</h2>
                 <p class="muted" style="line-height: 1.8">أعدّها موقع الدرر السنية، وتبدأ بكتاب الطهارة وتنتهي بكتاب الجهاد. جمعناها هنا في سبعة أبواب كبرى لتسهيل التصفح.</p>
@@ -80,12 +82,12 @@ const sample = { ...KB.wudu_wind, latency: 2.4, mode: 'example', ch: 'voice' };
 
     <section class="section">
         <div class="wrap">
-            <div class="sec-head">
+            <div class="sec-head reveal">
                 <h2 class="h2">ست نتائج ممكنة، وكلها واضحة</h2>
                 <p class="muted" style="line-height: 1.8">لا يتظاهر دليل بالمعرفة. يصنّف كل سؤال في واحدة من هذه النتائج، ويخبرك بها في رأس الإجابة.</p>
             </div>
             <div class="outcomes">
-                <div v-for="s in ST_PUBLIC" :key="s" class="outcome">
+                <div v-for="s in ST_PUBLIC" :key="s" class="outcome reveal" :data-st="s">
                     <div><StBadge :state="s" /></div>
                     <p>{{ STATUS[s].pub }}</p>
                     <div class="gets"><Icon name="arrow-left" /><span>{{ STATUS[s].gets }}</span></div>
