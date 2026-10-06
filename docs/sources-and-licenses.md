@@ -1,58 +1,85 @@
 # Sources, Components, Services, and Licenses
 
-Audited **2026-09-29**. `ACTUALLY USED` means imported, executed, or presented by the current repository. `PLANNED / OPTIONAL` means only a contract, schema, configuration placeholder, or local submission asset exists. No credentials belong in this file.
+Audited **2026-10-06**. `USED` means it runs in, or is shipped with, the product as it stands. `EVALUATION ONLY` means it was used to measure alternatives and is not part of serving answers. `OPTIONAL` means the code path exists and is off by default. No credentials belong in this file.
 
-| Status | Component | Type | Source / version | Purpose | License / rights status | Restrictions / material notes | Access date |
-|---|---|---|---|---|---|---|---|
-| ACTUALLY USED | Daleel project code | First-party source | This repository | Product implementation | **No repository-level LICENSE file declared** | Copyright remains with its owners by default; choose and add a license only with all rights holders’ approval | 2026-09-29 |
-| ACTUALLY USED | الموسوعة الفقهية – الدرر السنية | Approved knowledge reference | [dorar.net/feqhia](https://dorar.net/feqhia) | Default `OFFICIAL_HACKATHON_REFERENCE` source identity | No open redistribution license identified | Do not redistribute a copied corpus; preserve attribution/links; use only content the team is authorized to process | 2026-09-29 |
-| ACTUALLY USED | Dorar methodology pages | Source methodology | [method](https://dorar.net/article/1923), [accreditation description](https://dorar.net/article/1983) | Understand source structure/method | Rights reserved; informational citation | No claim of partnership or endorsement | 2026-09-29 |
-| ACTUALLY USED | Official challenge website | Competition source | [islamicaich.org](https://islamicaich.org/) | Tracks, participation, submission requirements | Rights reserved; informational citation | Official Arabic text controls; do not imply organizer endorsement | 2026-09-29 |
-| ACTUALLY USED | Official participant guide | Competition PDF | [official PDF](https://islamicaich.org/files/Hackathon/i2xgA3mxVhrbRe0ReLlA86kTDbFZ9QQ9eb856dq8.pdf) | Deliverables and judging criteria | Rights reserved; participant information use | Summarized, not redistributed | 2026-09-29 |
-| ACTUALLY USED | Official scientific annex | Competition reference policy | Participant portal; public website names the annex but exposes no indexed public content link | Approved-source scope | Organizer material | Team must confirm exact portal release before submission | 2026-09-29 |
-| ACTUALLY USED | Dorar encyclopedia table of contents | Titles and links | [dorar.net/feqhia](https://dorar.net/feqhia), stored in `apps/site/resources/js/data/encyclopedia.json` | The encyclopedia page: each of the 52 books and its top-level chapters links to its own Dorar page | Rights reserved; titles and links only, no content copied | Read once from the public table of contents (robots.txt allows it); every book address confirmed against the page title; attribution and links preserved | 2026-10-05 |
-| ACTUALLY USED | Laravel | Web framework | 13.x (`apps/site/composer.lock`) | Website: pages, public API, admin area | MIT | Preserve notices | 2026-10-05 |
-| ACTUALLY USED | Inertia.js (Laravel adapter and Vue client) | Page bridge | 3.x | Server-driven pages without a separate API | MIT | Preserve notices | 2026-10-05 |
-| ACTUALLY USED | Vue | UI library | 3.5 | Visitor pages and admin area | MIT | Preserve notices | 2026-10-05 |
-| ACTUALLY USED | Vite / laravel-vite-plugin / @vitejs/plugin-vue | Build tooling | Locked in `apps/site/package-lock.json` | Frontend build | MIT | Development/build dependency | 2026-10-05 |
-| ACTUALLY USED | FrankenPHP (with Caddy) | PHP application server | `dunglas/frankenphp:1-php8.4` image | Serves the website container | MIT (FrankenPHP), Apache-2.0 (Caddy) | Preserve notices | 2026-10-05 |
-| ACTUALLY USED | Lucide icons | Icon paths | Inlined in `apps/site/resources/js/lib/icons.js` | UI icons | ISC | Preserve notice | 2026-10-05 |
-| ACTUALLY USED | Inter, Tajawal, Amiri | Web fonts | Google Fonts, loaded by the browser | UI and quotation typefaces | SIL Open Font License 1.1 | Loaded from Google's servers at page view | 2026-10-05 |
-| ACTUALLY USED | FastAPI | API framework | `>=0.115,<1` | HTTP API | MIT | Preserve notices | 2026-09-29 |
-| ACTUALLY USED | Uvicorn | ASGI server | `>=0.32,<1` | Local API server | BSD-3-Clause | Preserve notices and non-endorsement clause | 2026-09-29 |
-| ACTUALLY USED | Pydantic Settings | Configuration | `>=2.6,<3` | Environment parsing | MIT | Preserve notices | 2026-09-29 |
-| ACTUALLY USED | SQLAlchemy | Database library | `>=2.0,<3` | Provider-ready database layer dependency | MIT | Runtime repository is not implemented | 2026-09-29 |
-| ACTUALLY USED | psycopg / psycopg-binary | PostgreSQL driver | `>=3.2,<4` | Optional database connection | LGPL-3.0-only; recheck packaged notices | Review binary-distribution obligations before redistribution | 2026-09-29 |
-| ACTUALLY USED | HTTPX | HTTP client | `>=0.27,<1` | Conservative source fetchers | BSD-3-Clause | Network access and source terms still apply | 2026-09-29 |
-| ACTUALLY USED | Beautiful Soup | HTML parser | `>=4.12,<5` | Deterministic source parsing | MIT | Preserve notices | 2026-09-29 |
-| ACTUALLY USED | python-multipart | Multipart parser | `>=0.0.20,<1` | Speech upload endpoint | Apache-2.0 | Preserve license/NOTICE when applicable | 2026-09-29 |
-| ACTUALLY USED | Typer | CLI framework | `>=0.15,<1` | Ingestion CLI | MIT | Preserve notices | 2026-09-29 |
-| ACTUALLY USED | pytest / pytest-asyncio / respx | Test tools | Dev ranges in `pyproject.toml` | Automated tests | Open-source; verify from installed distributions | Development only | 2026-09-29 |
-| ACTUALLY USED | PostgreSQL | Database server | PostgreSQL 16-compatible container | Optional local schema | PostgreSQL License | No hosted service is bundled | 2026-09-29 |
-| ACTUALLY USED | pgvector | PostgreSQL extension | `pgvector/pgvector:pg16` image | Vector column/index schema | PostgreSQL License | Schema exists; production vectors are not loaded | 2026-09-29 |
-| ACTUALLY USED | Mock generation provider | First-party deterministic provider | `apps/api/app/providers/base.py` | Source-bound evaluation summary | Project code; repository-level license undeclared | Not an LLM; never represent it as model intelligence | 2026-09-29 |
-| ACTUALLY USED | Mock reranker | First-party deterministic provider | Same module | Sort controlled candidate scores | Project code; repository-level license undeclared | Not a learned reranker | 2026-09-29 |
-| ACTUALLY USED | Mock embedding provider | First-party deterministic provider | Same module | Ingestion contract/testing | Project code; repository-level license undeclared | Not semantic embeddings | 2026-09-29 |
-| ACTUALLY USED | Mock ASR/TTS providers | First-party deterministic providers | Same module | API/provider contract tests | Project code; repository-level license undeclared | No real transcription or playable synthesized audio | 2026-09-29 |
-| ACTUALLY USED | Application screenshots | First-party visual assets | `artifacts/screenshots/official/` | README/demo evidence | Created from Daleel UI | Ensure no third-party/private data enters replacement screenshots | 2026-09-29 |
-| ACTUALLY USED | Team avatar SVGs | First-party visual assets | `assets/team-*.svg` | Presentation/team visuals | Project-owned or team-provided; provenance should be retained | Confirm creator/likeness permissions before public distribution | 2026-09-29 |
-| ACTUALLY USED | GitHub QR image | Generated visual asset | `assets/github-qr.png` | Presentation repository link | Generated code image | Regenerate if final repository URL changes | 2026-09-29 |
-| PLANNED / OPTIONAL | Ibn Baz website adapter | Isolated legacy source | [binbaz.org.sa](https://binbaz.org.sa/) | Non-default future collection only | No open data license identified | `BINBAZ_REFERENCE` is not an approved-source fallback; no corpus redistributed | 2026-09-29 |
-| PLANNED / OPTIONAL | External embedding model | AI model | Not selected/connected | Semantic retrieval | Not applicable yet | Model name, license, hosting, data flow, and cost must be disclosed before use | 2026-09-29 |
-| PLANNED / OPTIONAL | External reranker | AI model | Not selected/connected | Learned relevance scoring | Not applicable yet | Same disclosure requirement | 2026-09-29 |
-| PLANNED / OPTIONAL | External LLM | AI model/service | Not selected/connected | Grounded summarization | Not applicable yet | No provider key or user/source content is currently sent externally | 2026-09-29 |
-| PLANNED / OPTIONAL | Production ASR | AI model/service | Not selected/connected | Speech recognition | Not applicable yet | Requires audio privacy, retention, license, region, and accuracy review | 2026-09-29 |
-| PLANNED / OPTIONAL | Production TTS | AI model/service | Not selected/connected | Spoken response | Not applicable yet | Must not impersonate a scholar/authority; disclose voice rights | 2026-09-29 |
-| PLANNED / OPTIONAL | Official PowerPoint template | Organizer visual asset | Local participant asset | Submission presentation | Provided for challenge participation; no general license inferred | Final presentation artifact is not tracked yet | 2026-09-29 |
+## Knowledge source and competition material
+
+| Status | Item | Source | Purpose | Rights status | Notes |
+|---|---|---|---|---|---|
+| USED | الموسوعة الفقهية – الدرر السنية | [dorar.net/feqhia](https://dorar.net/feqhia), books of Salah and Sawm, read 2026-10-03 | The only knowledge source answers are drawn from (`OFFICIAL_HACKATHON_REFERENCE`) | Rights reserved by Dorar; no open redistribution license identified | Every answer links back to its Dorar page. See "Source text in this repository" below |
+| USED | Dorar encyclopedia table of contents | [dorar.net/feqhia](https://dorar.net/feqhia), stored in `apps/site/resources/js/data/encyclopedia.json`, read 2026-10-05 | The encyclopedia page: each of the 52 books and its chapters links to its own Dorar page | Rights reserved; titles and links only, no content | Source and date are recorded in the file |
+| USED | Dorar methodology pages | [method](https://dorar.net/article/1923), [accreditation description](https://dorar.net/article/1983) | Understanding the source's structure | Rights reserved; informational citation | No claim of partnership or endorsement |
+| USED | Official challenge website and participant guide | [islamicaich.org](https://islamicaich.org/), [participant guide PDF](https://islamicaich.org/files/Hackathon/i2xgA3mxVhrbRe0ReLlA86kTDbFZ9QQ9eb856dq8.pdf) | Track, deliverables and judging criteria | Rights reserved; participant information use | Summarized, not redistributed |
+| USED | Official scientific annex | Participant portal | Approved-source scope | Organizer material | The team confirms the exact release in the portal |
+
+## AI models and AI services
+
+| Status | Item | Version / access | Purpose | License / terms | Data that leaves the server |
+|---|---|---|---|---|---|
+| USED | BAAI/bge-m3 | Hugging Face `BAAI/bge-m3`, run locally through sentence-transformers | Embeds each index unit (once) and each question | MIT | None when run locally (the Docker setup) |
+| USED | Cloudflare Workers AI, `@cf/baai/bge-m3` | Hosted API, hosted demo only (`QUERY_EMBEDDING_BACKEND=cloudflare`) | Embeds the question on a host too small to hold the model | Cloudflare service terms; model is MIT | The question text |
+| USED | OpenAI API | Responses API with structured output, model set by `OPENAI_GENERATION_MODEL` | Selects the units that answer the question, writes the grounded answer, and classifies whether the question is a fiqh question | OpenAI API terms; paid service | The question, and the text of the retrieved Dorar units |
+| USED | Web Speech API | The visitor's browser (Chromium-based) | Turns a spoken question into text before it is sent | Browser vendor's terms | Audio goes from the browser to the browser vendor's speech service, not to this project's servers |
+| OPTIONAL | Cloudflare Workers AI, `@cf/baai/bge-reranker-base` | Hosted API, off by default (`RERANKER_PROVIDER=cloudflare`) | Reorders retrieved units | Cloudflare service terms; model is MIT | The question and the text of ten retrieved units |
+| EVALUATION ONLY | intfloat/multilingual-e5-small | Hugging Face | Compared as an embedding model in the retrieval benchmark | MIT | None |
+| EVALUATION ONLY | Qwen/Qwen3-Embedding-0.6B | Hugging Face | Compared as an embedding model in the retrieval benchmark | Apache-2.0 | None |
+| EVALUATION ONLY | Qwen/Qwen3-Reranker-0.6B | Hugging Face | Measured as a reranker; not enabled because it did not improve the benchmark | Apache-2.0 | None |
+
+## Software
+
+| Status | Component | Version | Purpose | License |
+|---|---|---|---|---|
+| USED | Daleel project code | This repository | The product | No repository-level `LICENSE` file; see "Project license" below |
+| USED | Laravel | 13.x (`apps/site/composer.lock`) | Website: pages, public API, admin area | MIT |
+| USED | Inertia.js (Laravel adapter and Vue client) | 3.x | Server-driven pages | MIT |
+| USED | Vue | 3.5 | Visitor pages and admin area | MIT |
+| USED | Vite, laravel-vite-plugin, @vitejs/plugin-vue | Locked in `apps/site/package-lock.json` | Frontend build | MIT |
+| USED | FrankenPHP (with Caddy) | `dunglas/frankenphp:1-php8.4` image | Serves the website | MIT (FrankenPHP), Apache-2.0 (Caddy) |
+| USED | PHPUnit, Laravel Pint | Dev dependencies in `apps/site/composer.lock` | Website tests and formatting | BSD-3-Clause (PHPUnit), MIT (Pint) |
+| USED | Lucide icons | Paths inlined in `apps/site/resources/js/lib/icons.js` | UI icons | ISC |
+| USED | Inter, Tajawal, Amiri | Google Fonts, loaded by the browser | UI and quotation typefaces | SIL Open Font License 1.1 |
+| USED | FastAPI | `>=0.115,<1` | AI service HTTP API | MIT |
+| USED | Uvicorn | `>=0.32,<1` | ASGI server | BSD-3-Clause |
+| USED | Pydantic, Pydantic Settings | `>=2.6,<3` (settings) | Data models and configuration | MIT |
+| USED | sentence-transformers | `>=6.1,<7` | Loads and runs BGE-M3 | Apache-2.0 |
+| USED | PyTorch | CPU build in the Docker image | Runs the embedding model | BSD-3-Clause |
+| USED | NumPy | `>=2.0,<3` | Similarity search over the index | BSD-3-Clause |
+| USED | OpenAI Python SDK | `>=3.22,<4` | Client for the OpenAI API | Apache-2.0 |
+| USED | HTTPX | `>=0.27,<1` | Calls to Cloudflare Workers AI; source fetching during extraction | BSD-3-Clause |
+| USED | psycopg | `>=3.2,<4` | PostgreSQL driver (optional conversation store, earlier ingestion path) | LGPL-3.0 |
+| USED | Beautiful Soup, Typer, SQLAlchemy, python-multipart | Ranges in `apps/api/pyproject.toml` | Source parsing and the earlier ingestion tooling; installed with the service | MIT (Beautiful Soup, Typer, SQLAlchemy), Apache-2.0 (python-multipart) |
+| USED | pytest, pytest-asyncio, respx | Dev ranges in `apps/api/pyproject.toml` | AI service tests | MIT (pytest), Apache-2.0 (pytest-asyncio), BSD-3-Clause (respx) |
+| USED | PostgreSQL with pgvector image | `pgvector/pgvector:pg16` | The website's database. The pgvector extension is not used to answer questions | PostgreSQL License |
+| USED | SQLite | Bundled with Python | Server-side conversation state for clarifications | Public domain |
+| USED | Docker, Docker Compose | Host tooling | Runs the whole stack with one command | Apache-2.0 |
+
+## Hosting and operations (hosted demo only)
+
+| Status | Service | Purpose | Terms | Data held there |
+|---|---|---|---|---|
+| USED | Render (free web service) | Runs the website and the AI service in one container | Render terms of service | Application logs; conversation state in a file that is lost on restart |
+| USED | Supabase (free PostgreSQL) | The website's database | Supabase terms of service | Visitor questions and answers, feedback, contact messages, the admin account |
+| USED | GitHub, GitHub Actions | Source hosting; a scheduled workflow that opens the demo's home page so it does not go to sleep | GitHub terms of service | Source code only |
+
+## First-party assets
+
+| Status | Asset | Location | Notes |
+|---|---|---|---|
+| USED | Interface design and stylesheet | `apps/site/resources/css/app.css` | Designed by the team for this project |
+| USED | Application screenshots | `artifacts/screenshots/official/` | Captured from the Daleel interface with prepared examples and synthetic dashboard data |
+| USED | Team avatar SVGs, GitHub QR image | `assets/` | Team-provided; regenerate the QR code if the repository URL changes |
 
 ## Data and API disclosure
 
-- No external AI/model API is called by the current runtime.
-- No real beneficiary conversation dataset is used.
-- Evaluation questions and HTML fixtures are synthetic.
-- The real Dorar corpus is not committed.
-- No credentials or populated `.env` file are committed.
+- **External calls when answering.** The question and the text of the retrieved units are sent to OpenAI. In the hosted demo the question is also sent to Cloudflare Workers AI for embedding. In the Docker setup the embedding runs locally and only OpenAI is called.
+- **Visitor data.** Visitors are anonymous. The site stores each question, the answer state, an optional thumbs up or down, a browser-generated identifier and a keyed hash of the IP address. The contact form stores the name, email and message the visitor types.
+- **No real beneficiary dataset** is used for development or evaluation. The benchmark and evaluation questions were written by the team. The dashboard history that can be seeded for demonstrations is synthetic and flagged as such.
+- **No credentials** or populated `.env` file are committed.
 
-## License blocker
+## Source text in this repository
 
-The repository itself has no `LICENSE` file. That is not automatically a hackathon disqualifier, but it means downstream reuse rights are not granted by default and may reduce public-repository clarity. The team—not an automated tool—must choose the project license after confirming all contributors’ and prior-work rights.
+The extracted text of the Salah and Sawm books is committed, because the product answers from it: `artifacts/dorar_final_dataset/four_books/` and `artifacts/benchmark/final_30q_retrieval/production_index/`. Dorar's rights in that text are reserved and no redistribution license has been identified. The team has to decide, with the organizers' approved-source terms, whether these files may stay in a public repository; if not, they can be removed from it and rebuilt locally from the source pages.
+
+## Project license
+
+The repository has no `LICENSE` file, so no reuse rights are granted by default. Choosing a license is a decision for all contributors.
