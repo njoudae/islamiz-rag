@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     # Where the question is embedded: "local" loads the model in this process;
     # "cloudflare" calls the same model on Cloudflare Workers AI (for small hosts).
     query_embedding_backend: str = "local"
+    # RERANKER_PROVIDER=cloudflare reorders the best RERANK_DEPTH units with the hosted reranker
+    # before the top five go to the selector. Any other value leaves retrieval as it is.
+    rerank_depth: int = 10
     cloudflare_account_id: str | None = None
     cloudflare_api_token: SecretStr | None = None
 

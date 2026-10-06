@@ -39,12 +39,22 @@ if settings.query_embedding_backend == "cloudflare":
         settings.cloudflare_account_id or "",
         settings.cloudflare_api_token.get_secret_value() if settings.cloudflare_api_token else "",
     )
+reranker = None
+if settings.reranker_provider == "cloudflare":
+    from app.providers.hosted_embedding import CloudflareReranker
+
+    reranker = CloudflareReranker(
+        settings.cloudflare_account_id or "",
+        settings.cloudflare_api_token.get_secret_value() if settings.cloudflare_api_token else "",
+    )
 answer_service = FinalRagService(
     Path(settings.final_index_dir),
     openai_api_key,
     settings.openai_generation_model,
     settings.retrieval_device,
     query_embedder,
+    reranker,
+    settings.rerank_depth,
 )
 # The scope check the earlier pipeline ran: a question that is not a fiqh question is
 # reported as OUT_OF_SCOPE rather than as a fiqh question with too little evidence.

@@ -51,8 +51,13 @@ class FinalRagService:
         generation_model: str,
         retrieval_device: str | None = None,
         query_embedder: Any | None = None,
+        reranker: Any | None = None,
+        rerank_depth: int = 10,
     ) -> None:
         self.index_dir = index_dir
+        # Optional hosted reranker; when set, the best `rerank_depth` units are reordered by it.
+        self.reranker = reranker
+        self.rerank_depth = rerank_depth
         # Optional hosted copy of the index's model; when set, no local model is loaded.
         self.query_embedder = query_embedder
         self.manifest = json.loads((index_dir / "manifest.json").read_text(encoding="utf-8"))
@@ -106,8 +111,21 @@ class FinalRagService:
                 show_progress_bar=False,
             )[0].astype("float32")
         scores = np.asarray(self.embeddings) @ vector
-        order = np.argsort(-scores, kind="stable")[:top_k]
-        return [(self.units[int(index)], float(scores[int(index)])) for index in order]
+        if self.reranker is None:
+            order = np.argsort(-scores, kind="stable")[:top_k]
+            return [(self.units[int(index)], float(scores[int(index)])) for index in order]
+        pool = [int(index) for index in np.argsort(-scores, kind="stable")[: max(top_k, self.rerank_depth)]]
+        try:
+            relevance = self.reranker.scores(
+                normalize_arabic(query),
+                [self.units[index]["retrieval_text_clean"][:2000] for index in pool],
+            )
+            pool = [pool[i] for i in sorted(range(len(pool)), key=lambda i: -relevance[i])]
+        except Exception:
+            # The reranker is an extra; if it does not answer, keep the similarity order.
+            pass
+        # The similarity is still what is reported, so its meaning does not change downstream.
+        return [(self.units[index], float(scores[index])) for index in pool[:top_k]]
 
     async def retrieve(self, query: str) -> tuple[dict[str, Any], float]:
         return await asyncio.to_thread(self._retrieve_sync, query)
