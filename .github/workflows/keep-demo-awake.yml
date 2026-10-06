@@ -1,0 +1,39 @@
+# Keeps the hosted demo from going to sleep during judging.
+#
+# The free hosting tier stops the container after 15 minutes without a visit, and the next
+# visitor then waits for it to start again. This opens the home page every 5 minutes instead.
+# The home page also touches the database, which keeps the free database project active.
+#
+# Scheduled runs only start from the default branch, and GitHub may run them several minutes
+# late, so a short sleep can still happen now and then; the next run wakes the site up.
+name: Keep the demo awake
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+env:
+  DEMO_URL: https://daleel-lqw1.onrender.com
+  # 7 October 2026, 03:00 Riyadh time.
+  START_AT: "2026-10-07T00:00:00Z"
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Open the home page
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%s)" -lt "$(date -u -d "$START_AT" +%s)" ]; then
+            echo "Pinging starts at $START_AT; nothing to do yet."
+            exit 0
+          fi
+          for attempt in 1 2 3; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 150 "$DEMO_URL/" || true)
+            echo "attempt $attempt: HTTP $code"
+            if [ "$code" = "200" ]; then exit 0; fi
+            sleep 20
+          done
+          echo "The demo did not answer after three attempts."
+          exit 1
