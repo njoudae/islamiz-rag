@@ -354,7 +354,8 @@ class FinalRagService:
                 runtime_context=runtime_context,
                 **diagnostics,
             )
-        if generated.status != "ANSWER" or not grounded or not (generated.answer or "").strip():
+        # An answer must rest on at least one validly selected unit; without one there is nothing to cite.
+        if generated.status != "ANSWER" or not grounded or not selected_units or not (generated.answer or "").strip():
             return AnswerResponse(
                 state=EvidenceState.INSUFFICIENT_EVIDENCE,
                 language=language,
