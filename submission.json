@@ -62,8 +62,6 @@
     "runbook": "RUNBOOK.md",
     "architecture": "ARCHITECTURE.md",
     "limitations": "LIMITATIONS.md",
-    "sources_and_licenses": "docs/sources-and-licenses.md",
-    "official_requirements": "docs/OFFICIAL_REQUIREMENTS.md",
-    "claim_evidence": "docs/CLAIM_EVIDENCE_MATRIX.md"
+    "sources_and_licenses": "docs/sources-and-licenses.md"
   }
 }

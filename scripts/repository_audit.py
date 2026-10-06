@@ -91,9 +91,8 @@ def main() -> int:
 
     required = [
         "README.md", "JUDGING.md", "RUNBOOK.md", "ARCHITECTURE.md", "LIMITATIONS.md",
-        "SUBMISSION_CHECKLIST.md", "submission.json", "evaluation/evaluation_cases.json",
-        "evaluation/results.json", "evaluation/REPORT.md", "docs/OFFICIAL_REQUIREMENTS.md",
-        "docs/CLAIM_EVIDENCE_MATRIX.md", "docs/DEMO.md", "docs/VIDEO_SCRIPT_AR.md",
+        "submission.json", "evaluation/evaluation_cases.json",
+        "evaluation/results.json", "evaluation/REPORT.md", "docs/VIDEO_SCRIPT_AR.md",
         "docs/VIDEO_SHOTLIST.md", "docs/sources-and-licenses.md",
     ]
     missing_required = [item for item in required if not (ROOT / item).exists()]

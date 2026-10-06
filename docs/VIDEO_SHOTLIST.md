@@ -17,5 +17,5 @@
 - Target final duration: 1:40–1:55; hard limit: 2:00.
 - Keep the mock/provider labels visible when voice UI is shown.
 - Do not show private browser tabs, credentials, local paths, or real conversations.
-- Use only synthetic questions from `docs/DEMO.md`.
+- Use only questions written for the demo, such as the suggested ones in `JUDGING.md`; never a real visitor's question.
 
