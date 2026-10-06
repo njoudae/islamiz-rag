@@ -27,7 +27,6 @@ services:
       retries: 12
     volumes:
       - daleel_pg:/var/lib/postgresql/data
-      - ./infra/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
 
   # RAG pipeline: retrieval, grounded source selection, generation.
   # On first start it downloads the embedding model (about 2.3 GB).
