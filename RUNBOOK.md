@@ -137,26 +137,25 @@ The first question loads BGE-M3 and may take noticeably longer on CPU.
 ## Verification and evaluation
 
 ```powershell
-# Unit and safety tests (not real RAG accuracy)
+# AI service tests: the answer pipeline and the routes. No key, model or network needed.
 apps/api/.venv-real/Scripts/python -m pytest apps/api/tests
 
-# Deterministic offline behavior suite using mocks
-apps/api/.venv-real/Scripts/python evaluate.py
-
-# Legacy experiment: PostgreSQL + E5 + lexical/hybrid retrieval evaluation
+# Final generation evaluation: 10 cases against the real pipeline (uses the OpenAI key)
 $env:PYTHONPATH="apps/api"
-apps/api/.venv-real/Scripts/python evaluate_real_rag.py
+apps/api/.venv-real/Scripts/python scripts/run_generation_final_test_10.py
 
-# Legacy experiment: Qwen reranking over persisted Top-20 retrieval candidates
-apps/api/.venv-real/Scripts/python rerank_real_rag.py
+# Retrieval benchmark and index rebuild (needs a GPU and three embedding models)
+python run_final_30q_pipeline.py
 
 # Website tests (see "Tests" above)
 
-# Public-repository audit
+# Public-repository audit: secrets, broken documentation links, required files
 apps/api/.venv-real/Scripts/python scripts/repository_audit.py
 ```
 
-Real outputs are under `artifacts/retrieval/`, `artifacts/reranking/`, `artifacts/generation/`, and `artifacts/evaluation/`. `evaluation/results.json` and `evaluation/REPORT.md` belong to the separate deterministic safety suite.
+Saved results of the last runs are in `evaluation/generation_final_report.md` and `artifacts/benchmark/final_30q_retrieval/FINAL_BENCHMARK.md`.
+
+Four tests in the suite are marked as expected failures: they exercise the earlier experimental pipeline, which no longer serves answers. The scripts `evaluate.py`, `evaluate_real_rag.py`, `rerank_real_rag.py` and `generate_real_answers.py`, with their outputs under `artifacts/retrieval/`, `artifacts/reranking/`, `artifacts/generation/` and `evaluation/REPORT.md`, belong to that earlier experiment and are kept for the record.
 
 ## Shutdown
 

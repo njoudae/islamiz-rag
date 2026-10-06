@@ -3,7 +3,7 @@
 Laravel 13 + Inertia + Vue 3 application: the visitor pages, the admin area, and everything between the browser and the AI service. It owns all ordinary web application work, so the AI service (`apps/api`) can stay a stateless pipeline. The UI follows the approved design (`fatwa-standalone.html`), with the Daleel name and the design's logo; its stylesheet is `resources/css/app.css`.
 
 ```text
-browser ──> site (this app) ──> ai (FastAPI, internal) ──> postgres
+browser ──> site (this app) ──> ai (FastAPI, internal; answers from a file index)
               │
               └── postgres, schema "site": questions, admin user, sessions
 ```
@@ -12,13 +12,13 @@ browser ──> site (this app) ──> ai (FastAPI, internal) ──> postgres
 
 | Area | Route | Notes |
 |---|---|---|
-| Home | `GET /` | Hero ask bar, the seven outcomes, the encyclopedia's book groups. |
+| Home | `GET /` | A prepared example answer, how it works, the encyclopedia's book groups, and the six outcomes a visitor can get. |
 | Ask | `GET /ask` (`/try` redirects) | Chat with text or voice (browser speech-to-text) and feedback. A blocked or missing microphone shows an alert instead of recording. Accepts `?q=`, `?voice=1`, `?prefill=`. |
 | Encyclopedia | `GET /encyclopedia` | The 52 books with their entry counts and chapters, searchable by book or chapter. Every book and chapter links to its own Dorar page. Accepts `?group=`. |
 | Contact | `GET /contact`, `POST /contact` | Name, email, topic, optional pasted question, message (1,500 characters), optional emailed copy, and an FAQ. Rate-limited, with a honeypot field against bots. |
-| Ask | `POST /api/v1/ask` | No login. Validates, rate-limits, forwards to the AI service, stores the question with its state and channel. `parent_id` continues a clarification. |
+| Ask | `POST /api/v1/ask` | No login. Validates, rate-limits, forwards to the AI service, stores the question with its state and channel. `parent_id` continues a clarification through the AI service's `conversation_id`. |
 | Feedback | `POST /api/v1/questions/{id}/feedback` | Thumbs up or down plus a reason. Only the browser that asked (same `X-Visitor-Id`) may rate. |
-| Status | `GET /api/v1/status` | Whether live answers are available; the ask page switches to demo mode when not. |
+| Status | `GET /api/v1/status` | Whether live answers are available; when not, the ask page answers from a small prepared set and labels each answer as prepared. |
 | Admin login | `GET /login` | Single seeded administrator. Visitors never log in. |
 | Overview | `GET /admin` | KPIs with change against the previous period, outcome table, daily trend, latest questions. `?period=7|30|90`. |
 | Review queue | `GET /admin/review`, `POST /admin/review/{id}` | Filter, search, open a question, save a verdict and the correct state. |
@@ -35,7 +35,7 @@ browser ──> site (this app) ──> ai (FastAPI, internal) ──> postgres
 |---|---|
 | `app/Services/Ai/` | `AiClient` is the only class that knows the AI service's URLs and wire format. `AiAnswer` validates its response. |
 | `app/Actions/AskQuestion.php` | Calls the AI service and records the outcome. |
-| `app/Enums/AnswerState.php` | The six AI states plus `FAILED`, with labels and the answered/unanswered grouping. |
+| `app/Enums/AnswerState.php` | The AI service's states plus `FAILED`, with labels and the answered/unanswered grouping. |
 | `app/Services/Analytics/QuestionAnalytics.php` | Daily aggregates and latency percentiles for the dashboards. |
 | `app/Services/Analytics/QuestionInsights.php` | Sections, knowledge-gap groups, per-model quality, citation accuracy and transcription error. |
 | `app/Services/Ai/KnowledgeBase.php` | Cached summary of what the AI service has indexed and which models it runs (`GET /v1/info`). Shared with every page. |

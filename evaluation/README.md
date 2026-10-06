@@ -52,17 +52,15 @@ apps/api/.venv-real/Scripts/python scripts/run_generation_final_test_10.py
 
 يتطلب الأمر `OPENAI_API_KEY`، ويشغل 10 حالات فقط. الملفات النهائية:
 
-- `generation_test_cases.json`: الحالات والتوقعات الثابتة.
 - `generation_final_results.json`: Top-5، والاختيار، والسياق الكامل المختار، والمخرج المنظم، والتحققات.
 - `generation_final_report.md`: عرض يدوي لكل الحالات العشر.
 
-## اختبارات سلوك المحادثة الإنتاجي
+## اختبارات المسار الإنتاجي
 
-تغطي `apps/api/tests/test_conversation_e2e.py` خمس حالات endpoint دائمة: ANSWER مع مصدر ودليل backend، وCLARIFY ثم متابعة بالـ`conversation_id` نفسه، وINSUFFICIENT_EVIDENCE، وESCALATE المحايد، وعزل حالتي محادثة. تستخدم الاختبارات مخزنًا خادميًا حتميًا، بينما يستخدم التشغيل الفعلي SQLite الدائم في `CONVERSATION_DB_PATH`.
+`apps/api/tests/test_final_pipeline.py` و`apps/api/tests/test_api_routes.py` تغطي ما يضمنه الخادم نفسه دون تحميل نموذج أو اتصال بالشبكة: إرفاق المصدر ونص الدليل الأصلي، رفض معرّف دليل أو وحدة مختلق، غياب الجواب عند غياب مزود التوليد، سؤال الاستيضاح ومتابعته بالـ`conversation_id` نفسه، الإحالة، حالة «خارج النطاق»، والرمز الداخلي.
 
 ```powershell
-$env:PYTHONPATH="apps/api"
-apps/api/.venv-real/Scripts/python -m pytest apps/api/tests/test_conversation_e2e.py
+apps/api/.venv-real/Scripts/python -m pytest apps/api/tests
 ```
 
 ## تجارب التطوير
